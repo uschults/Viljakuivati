@@ -9,4 +9,4 @@ while(True):
     if(GPIO.input(pin)):
         print("HIGH")
     else:
-        print("LOW")S
+        print("LOW")
