@@ -10,3 +10,4 @@ while(True):
         print("HIGH")
     else:
         print("LOW")
+    time.sleep(0.1)
