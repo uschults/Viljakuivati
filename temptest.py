@@ -28,4 +28,4 @@ def read_temp():
 
 while True:
 	print(read_temp())
-	time.sleep(0.5)
+	time.sleep(0.2)
