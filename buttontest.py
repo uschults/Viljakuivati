@@ -3,7 +3,7 @@ import time
 
 pin = 7
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 while(True):
     if(GPIO.input(pin)):
