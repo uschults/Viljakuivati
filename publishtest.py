@@ -53,7 +53,7 @@ def connect_mqtt():
     client.on_message = on_message
     client.connect(broker, port)
     return client
-    
+
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" "+str(msg.payload))
@@ -78,7 +78,7 @@ def publish(client):
 def run():
     client = connect_mqtt()
     client.loop_start()
-    publish(client)
+    #publish(client)
 
 
 if __name__ == '__main__':
