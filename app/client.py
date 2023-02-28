@@ -75,7 +75,7 @@ def on_message(client, userdata, msg):
         msg = gitupdater.pull()
         print(msg)
         call(["systemctl", "restart","kuivati.service"])
-        print("restarting")
+        print("restartin")
     print(data)
 
 def mqtt_init():
