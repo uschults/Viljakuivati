@@ -62,7 +62,7 @@ def on_message(client, userdata, msg):
 
 def mqtt_init():
     client = connect_mqtt()
-    client.loop_forever()
+    client.loop_start()
     return client
 
 def publish(client):
@@ -84,5 +84,5 @@ def main():
 if __name__ == "__main__":
     client = mqtt_init()
     device_folders = temperature_sensor_init()
-    #publish(client)
+    publish(client)
     #main()
