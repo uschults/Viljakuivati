@@ -41,7 +41,7 @@ def connect_mqtt():
 
 def mqtt_init():
     client = connect_mqtt()
-    cl
+    #cl
 
 def main():
 
@@ -51,7 +51,7 @@ def main():
 
 
 if __name__ == "__main__":
-    mqtt_init()
+   # mqtt_init()
     temperature_sensor_init()
 
-    main()
+   # main()
