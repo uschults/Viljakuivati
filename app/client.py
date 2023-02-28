@@ -41,14 +41,24 @@ def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT Broker!")
+             # Subscribing in on_connect() means that if we lose the connection and
+            # reconnect then subscriptions will be renewed.
+            client.subscribe("mootor/mootor1")
         else:
             print("Failed to connect, return code %d\n", rc)
 
     client = mqtt_client.Client(client_id)
     client.username_pw_set(username, password)
     client.on_connect = on_connect
+    client.on_message = on_message
     client.connect(broker, port)
     return client
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    print(msg.topic+" "+str(msg.payload))
+    data = msg.payload.decode()
+    print(data)
 
 def mqtt_init():
     client = connect_mqtt()
@@ -74,5 +84,5 @@ def main():
 if __name__ == "__main__":
     client = mqtt_init()
     device_folders = temperature_sensor_init()
-    publish(client)
+    #publish(client)
     #main()
