@@ -8,7 +8,7 @@ import configparser
 from paho.mqtt import client as mqtt_client
 
 config = configparser.ConfigParser()
-config.read('/home/pi/Viljakuivati/configfile.ini')
+config.read('~/Viljakuivati/configfile.ini')
 
 
 device_folders = []
