@@ -44,6 +44,9 @@ def connect_mqtt():
              # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             client.subscribe("mootor/mootor1")
+            client.subscribe("mootor/mootor2")
+            client.subscribe("mootor/mootor3")
+            client.subscribe("mootor/mootor4")
         else:
             print("Failed to connect, return code %d\n", rc)
 
