@@ -1,0 +1,4 @@
+broker = '80.250.119.25'
+port = 1883
+
+topic = "python/mqtt"

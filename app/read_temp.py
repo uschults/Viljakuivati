@@ -1,13 +1,13 @@
 import time
 
-def read_temp_raw():
+def read_temp_raw(device_file):
     f = open(device_file, 'r')
     lines = f.readlines()
     f.close()
     return lines
 
-def read_temp():
-    lines = read_temp_raw()
+def read_temperature(device_file):
+    lines = read_temp_raw(device_file)
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
         lines = read_temp_raw()
