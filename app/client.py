@@ -5,6 +5,7 @@ import read_temp
 import random
 import configparser
 import git
+from subprocess import call
 
 from paho.mqtt import client as mqtt_client
 
@@ -73,6 +74,8 @@ def on_message(client, userdata, msg):
         print("starting update")
         msg = gitupdater.pull()
         print(msg)
+        call(["systemctl", "restart","kuivati.service"])
+        print("restarting")
     print(data)
 
 def mqtt_init():
