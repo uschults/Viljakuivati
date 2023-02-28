@@ -4,7 +4,7 @@ import time
 from paho.mqtt import client as mqtt_client
 
 
-broker = '80.250.119.25:1883'
+broker = '80.250.119.25'
 port = 1883
 topic = "kuivati/temp1"
 # generate client ID with pub prefix randomly
