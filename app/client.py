@@ -15,17 +15,18 @@ def temperature_sensor_init():
     os.system('modprobe w1-therm')
 
     base_dir = '/sys/bus/w1/devices/'
-    device_folder = glob.glob(base_dir + '28*')[0]
-    device_file = device_folder + '/w1_slave'
+    device_folder = glob.glob(base_dir + '28*')
+    print(device_folder)
+    #device_file = device_folder + '/w1_slave'
     
-    sub_folders = [name for name in os.listdir('/sys/bus/w1/devices/') if os.path.isdir(os.path.join('/sys/bus/w1/devices/', name))]
+    sub_folders = [name for name in os.listdir('/sys/bus/w1/devices/2*') if os.path.isdir(os.path.join('/sys/bus/w1/devices/', name))]
     #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
 
     print(sub_folders)
 
     
 
-    return 0
+    return sub_folders
 
     
 def connect_mqtt():
@@ -54,6 +55,6 @@ def main():
 
 if __name__ == "__main__":
    # mqtt_init()
-    temperature_sensor_init()
+    device_folders = temperature_sensor_init()
 
    # main()
