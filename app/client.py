@@ -4,12 +4,15 @@ import time
 import read_temp
 import random
 import configparser
+import git
 
 from paho.mqtt import client as mqtt_client
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
 print(config.sections())
+
+gitupdater = git.cmd.Git("https://github.com/uschults/Viljakuivati.git")
 
 device_folders = []
 
@@ -66,7 +69,10 @@ def connect_mqtt():
 def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
-    
+    if(data == "update"):
+        print("starting update")
+        msg = gitupdater.pull()
+        print(msg)
     print(data)
 
 def mqtt_init():
