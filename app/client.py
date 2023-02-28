@@ -19,7 +19,7 @@ def temperature_sensor_init():
     device_file = device_folder + '/w1_slave'
     
     sub_folders = [name for name in os.listdir('/sys/bus/w1/devices/') if os.path.isdir(os.path.join('/sys/bus/w1/devices/', name))]
-    list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
+    #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
 
     print(sub_folders)
 
