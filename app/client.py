@@ -3,8 +3,12 @@ import glob
 import time
 import read_temp
 import random
+import configparser
 
 from paho.mqtt import client as mqtt_client
+
+config = configparser.ConfigParser()
+config.read('configfile.ini')
 
 
 device_folders = []
@@ -43,10 +47,10 @@ def connect_mqtt():
             print("Connected to MQTT Broker!")
              # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
-            client.subscribe("mootor/mootor1")
-            client.subscribe("mootor/mootor2")
-            client.subscribe("mootor/mootor3")
-            client.subscribe("mootor/mootor4")
+            for key in config('MOTOR_PINS'):
+                print(f'Subscribing to {key}')
+                client.subscribe(f"mootor/{key}")
+                
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -69,23 +73,25 @@ def mqtt_init():
     return client
 
 def publish(client):
-    while True:
-        time.sleep(1)
-        msg = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
-        result = client.publish(topic, msg)
-        # result: [0, 1]
-        status = result[0]
-        if status == 0:
-            print(f"Send `{msg}` to topic `{topic}`")
-        else:
-            print(f"Failed to send message to topic {topic}")
+    time.sleep(1)
+    msg = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
+    result = client.publish(topic, msg)
+    # result: [0, 1]
+    status = result[0]
+    if status == 0:
+        print(f"Send `{msg}` to topic `{topic}`")
+    else:
+        print(f"Failed to send message to topic {topic}")
 
-def main():
-    return 0
+def main(client):
+    while True:
+        publish(client)
 
 
 if __name__ == "__main__":
+    #mqtt init
     client = mqtt_init()
+    #auto detect temperature sensors and save
     device_folders = temperature_sensor_init()
-    publish(client)
-    #main()
+    #publish(client)
+    main(client)
