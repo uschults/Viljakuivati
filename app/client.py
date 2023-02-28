@@ -50,6 +50,7 @@ def connect_mqtt():
             for key in config['MOTOR_PINS']:
                 print(f"mootor/{key}")
                 client.subscribe(f"mootor/{key}")
+            client.subscribe("update")
                 
         else:
             print("Failed to connect, return code %d\n", rc)
@@ -63,8 +64,9 @@ def connect_mqtt():
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
+    print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
+    
     print(data)
 
 def mqtt_init():
