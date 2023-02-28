@@ -55,7 +55,7 @@ def mqtt_init():
     client.loop_start()
     return client
 
-def publish(client, msg):
+def publish(client):
     while True:
         time.sleep(1)
         msg = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
