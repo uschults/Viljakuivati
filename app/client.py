@@ -62,7 +62,7 @@ def on_message(client, userdata, msg):
 
 def mqtt_init():
     client = connect_mqtt()
-    client.loop_start()
+    client.loop_forever()
     return client
 
 def publish(client):
