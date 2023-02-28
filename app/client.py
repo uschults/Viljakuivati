@@ -48,7 +48,7 @@ def connect_mqtt():
              # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             for key in config['MOTOR_PINS']:
-                print(f'Subscribing to {key}')
+                print(f"mootor/{key}")
                 client.subscribe(f"mootor/{key}")
                 
         else:
