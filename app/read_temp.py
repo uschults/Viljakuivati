@@ -19,7 +19,7 @@ def read_temperature(device_file):
             return temp_c
     except:
         print("no tempsensors found!")
-        continue
+        
 
 if __name__ == "__main__":
     print("temp reading")
