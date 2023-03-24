@@ -78,8 +78,13 @@ def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     print(data)
-    if(data == "mootor1"):
-        GPIO.output(outputpin, 0)
+    if(msg.topic == "mootor/mootor1"):
+        if(data==true):
+            GPIO.output(outputpin, 0)
+            print("turn motor on")
+        else:
+            GPIO.output(outputpin, 1)
+            print("Turn motor off")
     elif(data == "update"):
         print("starting update")
         msg = gitupdater.pull()
