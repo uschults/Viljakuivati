@@ -86,8 +86,6 @@ def on_message(client, userdata, msg):
         print(msg)
         call(["systemctl", "restart","kuivati.service"])
         print("restarting")
-        
-    
 
 def mqtt_init():
     client = connect_mqtt()
