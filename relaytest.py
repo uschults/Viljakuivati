@@ -10,8 +10,8 @@ GPIO.setup(outputpin, GPIO.OUT)
 while(True):
     if(GPIO.input(buttonpin)):
         print("HIGH")
-        GPIO.ouput(outputpin, 1)
+        GPIO.output(outputpin, 1)
     else:
         print("LOW")
-        GPIO.ouput(outputpin, 0)
+        GPIO.output(outputpin, 0)
     time.sleep(0.1)
