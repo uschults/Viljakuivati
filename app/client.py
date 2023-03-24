@@ -79,7 +79,7 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     print(data)
     if(msg.topic == "mootor/mootor1"):
-        if(data==true):
+        if(data=="true"):
             GPIO.output(outputpin, 0)
             print("turn motor on")
         else:
