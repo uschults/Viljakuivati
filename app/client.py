@@ -5,9 +5,16 @@ import read_temp
 import random
 import configparser
 import git
-from subprocess import call
+import RPi.GPIO as GPIO
 
+from subprocess import call
 from paho.mqtt import client as mqtt_client
+
+buttonpin = 11
+outputpin = 8
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(outputpin, GPIO.OUT)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -70,13 +77,17 @@ def connect_mqtt():
 def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
-    if(data == "update"):
+    print(data)
+    if(data == "mootor1"):
+        GPIO.output(outputpin, 0)
+    elif(data == "update"):
         print("starting update")
         msg = gitupdater.pull()
         print(msg)
         call(["systemctl", "restart","kuivati.service"])
-        print("restartin")
-    print(data)
+        print("restarting")
+        
+    
 
 def mqtt_init():
     client = connect_mqtt()
@@ -97,7 +108,12 @@ def publish(client):
 def main(client):
     while True:
         publish(client)
-
+        if(GPIO.input(buttonpin)):
+            print("HIGH")
+            GPIO.output(outputpin, 0)
+        else:
+            print("LOW")
+            GPIO.output(outputpin, 1)
 
 if __name__ == "__main__":
     #mqtt init
