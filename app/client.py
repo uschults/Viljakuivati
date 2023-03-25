@@ -125,11 +125,11 @@ def main(client):
 
 
         if(GPIO.input(buttonpin)):
-            puuteandur_status = "high"
+            puuteandur_status = "TÜHI"
             print(puuteandur_status)
             GPIO.output(outputpin, 0)
         else:
-            puuteandur_status = "low"
+            puuteandur_status = "TÄIS"
             print(puuteandur_status)
             GPIO.output(outputpin, 1)
         publish(client, "puuteandur/punker", puuteandur_status)
