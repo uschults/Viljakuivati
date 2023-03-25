@@ -26,7 +26,7 @@ gitupdater = git.cmd.Git("https://github.com/uschults/Viljakuivati.git")
 
 device_folders = []
 
-# to be moved to config file
+# to be moved to config file maybe
 broker = '80.250.119.25'
 port = 1883
 temperature_topic = "kuivati/temp1"
@@ -39,8 +39,9 @@ password = 'admin'
 puuteandur_status = ""
 
 def temperature_sensor_init():
-    os.system('modprobe w1-gpio')
-    os.system('modprobe w1-therm')
+    # not needed if 1-wire interface enabled
+    #os.system('modprobe w1-gpio')
+    #os.system('modprobe w1-therm')
 
     base_dir = '/sys/bus/w1/devices/'
     device_folders = glob.glob(base_dir + '28*')
@@ -122,8 +123,10 @@ def get_temp():
 def main(client):
     while True:
         #get temp and send to server
-        msg = get_temp()
-        publish(client, temperature_topic, msg)
+        for sensor in device_folders:
+            print(sensor)
+            msg = get_temp()
+            publish(client, temperature_topic, msg)
 
 
         if(GPIO.input(buttonpin)):
