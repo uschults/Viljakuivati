@@ -87,9 +87,10 @@ def on_message(client, userdata, msg):
             print("Turn motor off")
     elif(data == "update"):
         print("starting update")
+        client.loop_stop()
         msg = gitupdater.pull()
         print(msg)
-        call(["systemctl", "restart","kuivati.service"])
+        call(["sudo", "systemctl", "restart", "kuivati.service"])
         print("restarting")
 
 def mqtt_init():
