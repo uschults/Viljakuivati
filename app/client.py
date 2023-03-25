@@ -94,7 +94,6 @@ def on_message(client, userdata, msg):
         client.loop_stop()
         msg = gitupdater.pull()
         print(msg)
-        call(["git", "config", "--global", "--add", "safe.directory", "/home/pi/Viljakuivati"])
         call(["sudo", "systemctl", "restart", "kuivati.service"])
         print("restarting")
 
