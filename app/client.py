@@ -7,6 +7,8 @@ import configparser
 import git
 import RPi.GPIO as GPIO
 
+from threading import Thread
+
 from subprocess import call
 from paho.mqtt import client as mqtt_client
 
@@ -102,8 +104,8 @@ def mqtt_init():
     client.loop_start()
     return client
 
+
 def publish(client, topic, msg ):
-    
     result = client.publish(topic, msg)
     # result: [0, 1]
     status = result[0]
