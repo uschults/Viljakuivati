@@ -14,6 +14,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
+    print(msg)
     print("Message received-> "+ msg.topic + " " + str(msg.payload))  # Print a received msg
 
 
