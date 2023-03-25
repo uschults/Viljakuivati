@@ -130,14 +130,14 @@ def main(client):
             publish(client, temperature_topics[id], msg)
             id+=1
 
-        # 0 if pressed, status 0 if empty 
-        if(GPIO.input(buttonpin)):
-            print("hetkel on high")
-        if(GPIO.input(buttonpin) and puuteandur_status==1):
+        # 0 if not pressed, status 0 if empty 
+        if(not GPIO.input(buttonpin)):
+            print("hetkel on low")
+        if(not GPIO.input(buttonpin) and puuteandur_status==1):
             puuteandur_status = 0
             publish(client, "puuteandur/punker", "tühi")
             
-        elif(not GPIO.input(buttonpin) and puuteandur_status==0):
+        elif(GPIO.input(buttonpin) and puuteandur_status==0):
             puuteandur_status = 1 
             publish(client, "puuteandur/punker", "TÄIS")
         
