@@ -29,7 +29,7 @@ device_folders = []
 # to be moved to config file maybe
 broker = '80.250.119.25'
 port = 1883
-temperature_topic = "kuivati/temp1"
+temperature_topics = ["kuivati/temp1", "kuivati/temp2"]
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
@@ -123,10 +123,12 @@ def get_temp():
 def main(client):
     while True:
         #get temp and send to server
+        id = 0
         for sensor in device_folders:
             print(sensor)
             msg = get_temp()
-            publish(client, temperature_topic, msg)
+            publish(client, temperature_topics[id], msg)
+            id+=1
 
 
         if(GPIO.input(buttonpin)):
