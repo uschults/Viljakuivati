@@ -3,7 +3,6 @@ import paho.mqtt.client as mqtt
 broker = '80.250.119.25'
 port = 1883
 # generate client ID with pub prefix randomly
-client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
@@ -18,7 +17,7 @@ def on_message(client, userdata, msg):
     print("Message received-> "+ msg.topic + " " + str(msg.payload))  # Print a received msg
 
 
-client = mqtt.Client("digi_mqtt_test")  # Create instance of client with client ID “digi_mqtt_test”
+client = mqtt.Client("testing name")  # Create instance of client with client ID “digi_mqtt_test”
 client.username_pw_set(username, password)
 client.on_connect = on_connect
 client.on_message = on_message
