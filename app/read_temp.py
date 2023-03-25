@@ -12,6 +12,7 @@ while True:
                 (discard, sep, reading) = data.partition(' t=')
                 t = float(reading) / 1000.0    #reports temperature in degrees C
                 datastring = datastring + id + ':' + str(t) + ','
+                print(datastring)
 
         except:    
             pass
