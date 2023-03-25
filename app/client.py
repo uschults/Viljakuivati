@@ -35,8 +35,8 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
-#temps for testing
-puuteandur_status = ""
+#temporary for testing
+puuteandur_status = 0 # 0 = tühi
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -47,11 +47,10 @@ def temperature_sensor_init():
     device_folders = glob.glob(base_dir + '28*')
     print(device_folders)
     #device_file = device_folder + '/w1_slave'
-    
+
     ###if glob doesnt find all folders, use pref scandir or listdir. doesn't find folders with 28* yet..
     #sub_folders = [name for name in os.listdir('/sys/bus/w1/devices/2*') if os.path.isdir(os.path.join('/sys/bus/w1/devices/', name))]
     #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
-
     #print(sub_folders)
 
     return device_folders
@@ -85,10 +84,10 @@ def on_message(client, userdata, msg):
     print(data)
     if(msg.topic == "mootor/mootor1"):
         if(data=="true"):
-            GPIO.output(outputpin, 0)
+            GPIO.output(outputpin, 1)
             print("turn motor on")
         else:
-            GPIO.output(outputpin, 1)
+            GPIO.output(outputpin, 0)
             print("Turn motor off")
 
 
@@ -130,16 +129,17 @@ def main(client):
             publish(client, temperature_topics[id], msg)
             id+=1
 
+        # 0 if pressed, status 0 if empty 
+        if(GPIO.input(buttonpin) and puuteandur_status==1):
+            puuteandur_status = 0
+            publish(client, "puuteandur/punker", "tühi")
+            
+        elif(not GPIO.input(buttonpin) and puuteandur_status==0):
+            puuteandur_status = 1 
+            publish(client, "puuteandur/punker", "TÄIS")
+        
 
-        if(GPIO.input(buttonpin)):
-            puuteandur_status = "tühi"
-            print(puuteandur_status)
-            GPIO.output(outputpin, 0)
-        else:
-            puuteandur_status = "TÄIS"
-            print(puuteandur_status)
-            GPIO.output(outputpin, 1)
-        publish(client, "puuteandur/punker", puuteandur_status)
+        
         
 
 if __name__ == "__main__":
