@@ -131,6 +131,8 @@ def main(client):
             id+=1
 
         # 0 if pressed, status 0 if empty 
+        if(GPIO.input(buttonpin)):
+            print("hetkel on high")
         if(GPIO.input(buttonpin) and puuteandur_status==1):
             puuteandur_status = 0
             publish(client, "puuteandur/punker", "tühi")
