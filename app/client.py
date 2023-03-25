@@ -131,11 +131,12 @@ def main(client):
             id+=1
 
         # 0 if not pressed, status 0 if empty 
-        if(not GPIO.input(buttonpin)):
-            print("hetkel on low")
+        # sinine to pin 5
+        # must to pin 6
+        # pullup from 6 to 3.3v
         if(not GPIO.input(buttonpin) and puuteandur_status==1):
             puuteandur_status = 0
-            publish(client, "puuteandur/punker", "tühi")
+            publish(client, "puuteandur/punker", "Tühi")
             
         elif(GPIO.input(buttonpin) and puuteandur_status==0):
             puuteandur_status = 1 
