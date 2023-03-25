@@ -27,12 +27,14 @@ device_folders = []
 # to be moved to config file
 broker = '80.250.119.25'
 port = 1883
-topic = "kuivati/temp1"
+temperature_topic = "kuivati/temp1"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
+#temps for testing
+puuteandur_status = ""
 
 def temperature_sensor_init():
     os.system('modprobe w1-gpio')
@@ -98,9 +100,8 @@ def mqtt_init():
     client.loop_start()
     return client
 
-def publish(client):
-    time.sleep(1)
-    msg = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
+def publish(client, topic, msg ):
+    
     result = client.publish(topic, msg)
     # result: [0, 1]
     status = result[0]
@@ -109,15 +110,28 @@ def publish(client):
     else:
         print(f"Failed to send message to topic {topic}")
 
+def get_temp():
+    time.sleep(1)
+    temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
+    return temp
+
 def main(client):
     while True:
-        publish(client)
+        #get temp and send to server
+        msg = get_temp()
+        publish(client, temperature_topic, msg)
+
+
         if(GPIO.input(buttonpin)):
-            print("HIGH")
+            puuteandur_status = "high"
+            print(puuteandur_status)
             GPIO.output(outputpin, 0)
         else:
-            print("LOW")
+            puuteandur_status = "low"
+            print(puuteandur_status)
             GPIO.output(outputpin, 1)
+        publish(client, "puuteandur/punker", puuteandur_status)
+        
 
 if __name__ == "__main__":
     #mqtt init
