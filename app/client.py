@@ -125,7 +125,7 @@ def main(client):
 
 
         if(GPIO.input(buttonpin)):
-            puuteandur_status = "TÜHI"
+            puuteandur_status = "tühi"
             print(puuteandur_status)
             GPIO.output(outputpin, 0)
         else:
