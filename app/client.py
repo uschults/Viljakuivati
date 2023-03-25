@@ -87,11 +87,14 @@ def on_message(client, userdata, msg):
         else:
             GPIO.output(outputpin, 1)
             print("Turn motor off")
+
+
     elif(data == "update"):
         print("starting update")
         client.loop_stop()
         msg = gitupdater.pull()
         print(msg)
+        call(["git", "config", "--global", "--add", "safe.directory", "/home/pi/Viljakuivati"])
         call(["sudo", "systemctl", "restart", "kuivati.service"])
         print("restarting")
 
