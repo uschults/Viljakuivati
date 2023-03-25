@@ -14,5 +14,6 @@ while True:
                 datastring = datastring + id + ':' + str(t) + ','
                 print(datastring)
 
-        except:    
+        except:
+            print("error")    
             pass
