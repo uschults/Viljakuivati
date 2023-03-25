@@ -35,8 +35,7 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
-#temporary for testing
-puuteandur_status = 0 # 0 = tühi
+
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -120,6 +119,8 @@ def get_temp():
     return temp
 
 def main(client):
+    #temporary for testing
+    puuteandur_status = 0 # 0 = tühi
     while True:
         #get temp and send to server
         id = 0
