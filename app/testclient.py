@@ -137,7 +137,7 @@ def publish(client, topic, msg ):
     else:
         print(f"Failed to send message to topic {topic}")
 
-def get_temps(client):
+def get_temps():
     #time.sleep(0.2)
     #temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
     #return temp
