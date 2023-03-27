@@ -146,7 +146,7 @@ def get_temps(client):
         for sensor in temp_sensors.keys():
             temp = read_temp.read_temperature(sensor)
             print(f"{sensor} : {temperature_topics[id]} :  {temp}")
-            publish(client, temperature_topics[id], temp)
+            #publish(client, temperature_topics[id], temp)
             id+=1
     # mayube try-except or smth needed
     print("No temp sensors")
@@ -175,10 +175,13 @@ def main(client):
 if __name__ == "__main__":
     try:
         #main()
+
+        # VVV these should be in main
+        fo = temperature_sensor_init()
         temp_thread = Thread(target = get_temps)
         temp_thread.start()
         get_motors(motor_topics)
-        fo = temperature_sensor_init()
+        
     except KeyboardInterrupt:
         print("Exiting")
         GPIO.cleanup()
