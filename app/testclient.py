@@ -187,6 +187,7 @@ if __name__ == "__main__":
         temp_thread = Thread(target = get_temps(client))
         temp_thread.start()
         
+        print("starting main")
         main(client)
         
     except KeyboardInterrupt:
