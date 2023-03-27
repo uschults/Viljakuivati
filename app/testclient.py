@@ -184,9 +184,9 @@ if __name__ == "__main__":
         fo = temperature_sensor_init()
         client = mqtt_init()
         
-        temp_thread = Thread(target = get_temps(client))
+        temp_thread = Thread(target = get_temps, args=(client))
         temp_thread.start()
-        
+
         print("starting main")
         main(client)
         
