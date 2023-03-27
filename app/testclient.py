@@ -137,7 +137,7 @@ def publish(client, topic, msg ):
     else:
         print(f"Failed to send message to topic {topic}")
 
-def get_temps():
+def get_temps(client):
     #time.sleep(0.2)
     #temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
     #return temp
@@ -146,7 +146,7 @@ def get_temps():
         for sensor in temp_sensors.keys():
             temp = read_temp.read_temperature(sensor)
             print(f"{sensor} : {temperature_topics[id]} :  {temp}")
-            #publish(client, temperature_topics[id], temp)
+            publish(client, temperature_topics[id], temp)
             id+=1
     # mayube try-except or smth needed
     print("No temp sensors")
@@ -177,10 +177,12 @@ if __name__ == "__main__":
         #main()
 
         # VVV these should be in main
+        client = mqtt_init()
         fo = temperature_sensor_init()
-        temp_thread = Thread(target = get_temps)
+        temp_thread = Thread(target = get_temps(client))
         temp_thread.start()
         get_motors(motor_topics)
+        main(client)
         
     except KeyboardInterrupt:
         print("Exiting")
