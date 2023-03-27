@@ -160,6 +160,7 @@ def main(client):
         # sinine to pin 5
         # must to pin 6
         # pullup from 6 to 3.3v
+        print("test")
         if(not GPIO.input(buttonpin) and puuteandur_status==1):
             print("PUNKER SAI TÜHJAKS")
             puuteandur_status = 0
