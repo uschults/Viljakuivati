@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import time
 import read_temp
@@ -14,6 +15,8 @@ from paho.mqtt import client as mqtt_client
 
 buttonpin = 11
 outputpin = 8
+
+GPIO.cleanup()
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(outputpin, GPIO.OUT)
@@ -34,6 +37,8 @@ port = 1883
 temperature_topics = ["kuivati/temp1", "kuivati/temp2"]
 # dictionary holds motor state
 motor_topics = {}
+
+temp_sensors = {}
 
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
@@ -56,6 +61,10 @@ def temperature_sensor_init():
     base_dir = '/sys/bus/w1/devices/'
     device_folders = glob.glob(base_dir + '28*')
     print(device_folders)
+
+    for folder in device_folders:
+        temp_sensors[folder+ '/w1_slave'] = 1
+
     #device_file = device_folder + '/w1_slave'
 
     ###if glob doesnt find all folders, use pref scandir or listdir. doesn't find folders with 28* yet..
@@ -63,7 +72,8 @@ def temperature_sensor_init():
     #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
     #print(sub_folders)
 
-    return device_folders
+    # old for list
+    #return device_folders
 
     
 def connect_mqtt():
@@ -127,23 +137,25 @@ def publish(client, topic, msg ):
     else:
         print(f"Failed to send message to topic {topic}")
 
-def get_temp():
-    time.sleep(1)
-    temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
-    return temp
+def get_temps(client):
+    #time.sleep(0.2)
+    #temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
+    #return temp
+    while temp_sensors:
+        id = 0
+        for sensor in temp_sensors.keys():
+            temp = read_temp.read_temperature(sensor)
+            print(f"{sensor} : {temperature_topics[id]} :  {temp}")
+            publish(client, temperature_topics[id], temp)
+            id+=1
+    # mayube try-except or smth needed
+    print("No temp sensors")
+
 
 def main(client):
     #temporary for testing
     puuteandur_status = 0 # 0 = tühi
     while True:
-        #get temp and send to server
-        id = 0
-        for sensor in device_folders:
-            print(sensor)
-            msg = get_temp()
-            publish(client, temperature_topics[id], msg)
-            id+=1
-
         # 0 if not pressed, status 0 if empty 
         # sinine to pin 5
         # must to pin 6
@@ -161,8 +173,16 @@ def main(client):
         
 
 if __name__ == "__main__":
-    get_motors(motor_topics)
-    fo = temperature_sensor_init()
+    try:
+        #main()
+        temp_thread = Thread(target = get_temps)
+        temp_thread.start()
+        get_motors(motor_topics)
+        fo = temperature_sensor_init()
+    except KeyboardInterrupt:
+        print("Exiting")
+        GPIO.cleanup()
+        sys.exit(0)
 
     #mqtt init
     #client = mqtt_init()
