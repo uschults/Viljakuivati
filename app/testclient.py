@@ -16,7 +16,7 @@ from paho.mqtt import client as mqtt_client
 buttonpin = 11
 outputpin = 8
 
-GPIO.cleanup()
+
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(outputpin, GPIO.OUT)
@@ -177,11 +177,13 @@ if __name__ == "__main__":
         #main()
 
         # VVV these should be in main
-        client = mqtt_init()
+        get_motors(motor_topics)
         fo = temperature_sensor_init()
+        client = mqtt_init()
+        
         temp_thread = Thread(target = get_temps(client))
         temp_thread.start()
-        get_motors(motor_topics)
+        
         main(client)
         
     except KeyboardInterrupt:
