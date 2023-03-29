@@ -46,7 +46,7 @@ password = 'admin'
 def get_motors(motor_topics):
     #read from config file to list
     for key in config['MOTOR_PINS']:
-        motor_topics["mootor/" + key] = 0
+        motor_topics[key] = 0
         # use this when using list
         #motor_topics.append(f"mootor/{key}")
     print("found motors:", motor_topics)
@@ -102,7 +102,7 @@ def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     print(data)
-    if(msg.topic == "mootor/mootor1"):
+    if(msg.topic == "mootor1"):
         if(data=="true"):
             GPIO.output(outputpin, 1)
             print("turn motor on")
