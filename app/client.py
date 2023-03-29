@@ -14,7 +14,7 @@ from paho.mqtt import client as mqtt_client
 
 buttonpin = 11
 outputpin = 8
-
+# gpios 0-8 are pulled high, the rest are pulled low
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -46,7 +46,7 @@ password = 'admin'
 def get_motors(motor_topics):
     #read from config file to list
     for key in config['MOTOR_PINS']:
-        motor_topics[key] = 0
+        motor_topics["mootor/" + key] = 0
         # use this when using list
         #motor_topics.append(f"mootor/{key}")
     print("found motors:", motor_topics)
