@@ -20,6 +20,7 @@ outputpin2 = 31
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(outputpin, GPIO.OUT)
+GPIO.setup(outputpin2, GPIO.OUT)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -109,6 +110,12 @@ def on_message(client, userdata, msg):
             time.sleep(1)
             print("turn motor on")
             GPIO.output(outputpin, 0)
+
+        elif(data=="false"):
+            GPIO.output(outputpin2, 1)
+            time.sleep(1)
+            print("turn motor off")
+            GPIO.output(outputpin2, 0)
 #        else:
 #            GPIO.output(outputpin2, 1)
 ##            print("Turn motor off")
