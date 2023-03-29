@@ -109,11 +109,11 @@ def on_message(client, userdata, msg):
             time.sleep(1)
             print("turn motor on")
             GPIO.output(outputpin, 0)
-        else:
-            GPIO.output(outputpin2, 1)
-            print("Turn motor off")
-            time.sleep(1)
-            GPIO.output(outputpin, 0)
+#        else:
+#            GPIO.output(outputpin2, 1)
+##            print("Turn motor off")
+ #           time.sleep(1)
+ #           GPIO.output(outputpin, 0)
 
 
 
