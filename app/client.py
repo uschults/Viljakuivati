@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import time
 import read_temp
@@ -8,12 +9,13 @@ import git
 import RPi.GPIO as GPIO
 
 from threading import Thread
-
 from subprocess import call
 from paho.mqtt import client as mqtt_client
 
 buttonpin = 11
 outputpin = 8
+
+
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(outputpin, GPIO.OUT)
@@ -26,16 +28,28 @@ gitupdater = git.cmd.Git("https://github.com/uschults/Viljakuivati.git")
 
 device_folders = []
 
-# to be moved to config file maybe
+##### to be moved to config file maybe
 broker = '80.250.119.25'
 port = 1883
+
+# Topics in server
 temperature_topics = ["kuivati/temp1", "kuivati/temp2"]
+# dictionary holds motor state
+motor_topics = {}
+temp_sensors = {}
+
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
-
+def get_motors(motor_topics):
+    #read from config file to list
+    for key in config['MOTOR_PINS']:
+        motor_topics[key] = 0
+        # use this when using list
+        #motor_topics.append(f"mootor/{key}")
+    print("found motors:", motor_topics)
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -45,6 +59,10 @@ def temperature_sensor_init():
     base_dir = '/sys/bus/w1/devices/'
     device_folders = glob.glob(base_dir + '28*')
     print(device_folders)
+
+    for folder in device_folders:
+        temp_sensors[folder+ '/w1_slave'] = 1
+
     #device_file = device_folder + '/w1_slave'
 
     ###if glob doesnt find all folders, use pref scandir or listdir. doesn't find folders with 28* yet..
@@ -52,18 +70,21 @@ def temperature_sensor_init():
     #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
     #print(sub_folders)
 
-    return device_folders
+    # old for list
+    #return device_folders
 
     
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT Broker!")
-             # Subscribing in on_connect() means that if we lose the connection and
+            # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
-            for key in config['MOTOR_PINS']:
-                print(f"mootor/{key}")
-                client.subscribe(f"mootor/{key}")
+            # maybe read directly from config??
+            for motor in motor_topics:
+                print(motor)
+                client.subscribe(motor)
+            # subscribe for update button
             client.subscribe("update")
                 
         else:
@@ -93,10 +114,12 @@ def on_message(client, userdata, msg):
     elif(data == "update"):
         print("starting update")
         client.loop_stop()
+        GPIO.cleanup()
         msg = gitupdater.pull()
         print(msg)
-        call(["sudo", "systemctl", "restart", "kuivati.service"])
         print("restarting")
+        call(["sudo", "systemctl", "restart", "kuivati.service"])
+        
 
 def mqtt_init():
     client = connect_mqtt()
@@ -113,32 +136,37 @@ def publish(client, topic, msg ):
     else:
         print(f"Failed to send message to topic {topic}")
 
-def get_temp():
-    time.sleep(1)
-    temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
-    return temp
+def get_temps(client):
+    #time.sleep(0.2)
+    #temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
+    #return temp
+    while temp_sensors:
+        id = 0
+        for sensor in temp_sensors.keys():
+            temp = read_temp.read_temperature(sensor)
+            print(f"{sensor} : {temperature_topics[id]} :  {temp}")
+            publish(client, temperature_topics[id], temp)
+            id+=1
+    # mayube try-except or smth needed
+    print("No temp sensors")
+
 
 def main(client):
     #temporary for testing
     puuteandur_status = 0 # 0 = tühi
     while True:
-        #get temp and send to server
-        id = 0
-        for sensor in device_folders:
-            print(sensor)
-            msg = get_temp()
-            publish(client, temperature_topics[id], msg)
-            id+=1
-
         # 0 if not pressed, status 0 if empty 
         # sinine to pin 5
         # must to pin 6
         # pullup from 6 to 3.3v
+        
         if(not GPIO.input(buttonpin) and puuteandur_status==1):
+            print("PUNKER SAI TÜHJAKS")
             puuteandur_status = 0
             publish(client, "puuteandur/punker", "Tühi")
             
         elif(GPIO.input(buttonpin) and puuteandur_status==0):
+            print("PUNKER SAI TÄIS")
             puuteandur_status = 1 
             publish(client, "puuteandur/punker", "TÄIS")
         
@@ -147,9 +175,28 @@ def main(client):
         
 
 if __name__ == "__main__":
+    try:
+        #main()
+
+        # VVV these should be in main
+        get_motors(motor_topics)
+        fo = temperature_sensor_init()
+        client = mqtt_init()
+        
+        temp_thread = Thread(target = get_temps, args=[client])
+        temp_thread.start()
+
+        print("starting main")
+        main(client)
+        
+    except KeyboardInterrupt:
+        print("Exiting")
+        GPIO.cleanup()
+        sys.exit(0)
+
     #mqtt init
-    client = mqtt_init()
+    #client = mqtt_init()
     #auto detect temperature sensors and save
-    device_folders = temperature_sensor_init()
+    #device_folders = temperature_sensor_init()
     #publish(client)
-    main(client)
+    #main(client)
