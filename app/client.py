@@ -13,7 +13,7 @@ from subprocess import call
 from paho.mqtt import client as mqtt_client
 
 buttonpin = 11
-outputpin = 8
+outputpin = 29
 # gpios 0-8 are pulled high, the rest are pulled low
 
 GPIO.setmode(GPIO.BOARD)
