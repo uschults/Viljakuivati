@@ -14,6 +14,7 @@ from paho.mqtt import client as mqtt_client
 
 buttonpin = 11
 outputpin = 29
+outputpin2 = 31
 # gpios 0-8 are pulled high, the rest are pulled low
 
 GPIO.setmode(GPIO.BOARD)
@@ -105,10 +106,15 @@ def on_message(client, userdata, msg):
     if(msg.topic == "mootor1"):
         if(data=="true"):
             GPIO.output(outputpin, 1)
+            time.sleep(1)
             print("turn motor on")
-        else:
             GPIO.output(outputpin, 0)
+        else:
+            GPIO.output(outputpin2, 1)
             print("Turn motor off")
+            time.sleep(1)
+            GPIO.output(outputpin, 0)
+
 
 
     elif(data == "update"):
