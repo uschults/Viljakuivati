@@ -1,8 +1,11 @@
 import configparser
 config = configparser.ConfigParser()
 
+print(config.sections())
 config.read('configfile.ini')
 print(config.sections())
 
-for key in config['MOTOR_PINS']:
-    print(key)
+print('MOTOR_PINS' in config)
+
+for key, value in config['MOTOR_PINS'].items():
+    print(key, value)

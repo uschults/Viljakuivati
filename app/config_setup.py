@@ -9,8 +9,22 @@ config_object['BUTTON_PINS'] = {
 
 # pins for temp sensor
 # uses onewire protocol
-config_object['temp_pins'] = {
+config_object['TEMP_PINS'] = {
     "temp_sens" : "7"
+}
+
+config_object['MOTOR_PINS'] = {
+    'mootor1' : '29',
+    'mootor2' : '31',
+    'mootor3' : '33',
+    'mootor4' : '35'
+}
+
+config_object['SETUP'] = {
+    'mqtt_server_ip' : '80.250.119.25',
+    'port' : '1883',
+    'username' : 'urmosc',
+    'password' : 'admin'
 }
 
 #Write the above sections to config.ini file

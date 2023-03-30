@@ -12,14 +12,17 @@ from threading import Thread
 from subprocess import call
 from paho.mqtt import client as mqtt_client
 
-buttonpin = 11
-outputpin = 29
-outputpin2 = 31
-# gpios 0-8 are pulled high, the rest are pulled low
+#buttonpin = 11
+#outputpin = 29
+#outputpin2 = 31
 
+# On boot all pins are input
+# gpios 0-8 are pulled high, the rest are pulled low on boot
+
+# for manual setup
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(outputpin, GPIO.OUT)
+#GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#GPIO.setup(outputpin, GPIO.OUT)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -37,6 +40,7 @@ port = 1883
 temperature_topics = ["kuivati/temp1", "kuivati/temp2"]
 # dictionary holds motor state
 motor_topics = {}
+level_buttons = {}
 temp_sensors = {}
 
 # generate client ID with pub prefix randomly
@@ -46,11 +50,23 @@ password = 'admin'
 
 def get_motors(motor_topics):
     #read from config file to list
-    for key in config['MOTOR_PINS']:
-        motor_topics[key] = 0
+    for key, value in config['MOTOR_PINS'].items():
+        motor_topics[key] = value.split(",")
+        GPIO.setup(motor_topics[key], GPIO.OUT)
+
+        # register pin as output for raspi
+
         # use this when using list
         #motor_topics.append(f"mootor/{key}")
     print("found motors:", motor_topics)
+
+def get_buttons(level_buttons):
+    #read from config file to list
+    for key, value in config['BUTTON_PINS'].items():
+        level_buttons[key] = value
+         # register pin as input with pulldown for raspi
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    print("found level buttons:", level_buttons)
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -98,26 +114,28 @@ def connect_mqtt():
     client.connect(broker, port)
     return client
 
+
+def motor_control(topic, state):
+    GPIO.output(motor_topics[topic], state)
+    time.sleep(0.2)
+    print("turn motor on")
+    GPIO.output(motor_topics[topic], not state)
+
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     print(data)
-    if(msg.topic == "mootor1"):
-        if(data=="true"):
-            GPIO.output(outputpin, 1)
-            time.sleep(1)
-            print("turn motor on")
-            GPIO.output(outputpin, 0)
-        else:
-            GPIO.output(outputpin2, 1)
-            print("Turn motor off")
-            time.sleep(1)
-            GPIO.output(outputpin, 0)
+
+    match msg.topic:
+        case "mootor1":
+            if(data=="true"):
+                motor_control(msg.topic, True)
+            else:
+                motor_control(msg.topic, False)
 
 
-
-    elif(data == "update"):
+    if(data == "update"):
         print("starting update")
         client.loop_stop()
         GPIO.cleanup()
