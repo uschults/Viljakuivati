@@ -125,7 +125,7 @@ def connect_mqtt():
             # subscribe for update button
             client.subscribe("update")
             # subscribe for lights
-            #client.subscribe("tuled1")
+            client.subscribe("tuled1")
         else:
             print("Failed to connect, return code %d\n", rc)
 
