@@ -139,7 +139,7 @@ def on_message(client, userdata, msg):
         print("restarting")
         call(["sudo", "systemctl", "restart", "kuivati.service"])
     
-    temp_topic = str(msg.topic)[0:5]
+    temp_topic = str(msg.topic)[0:6]
     print(temp_topic)
     if(temp_topic == "mootor"):
         if(data=="true"):
