@@ -67,7 +67,7 @@ def get_buttons(level_buttons):
     for key, value in config['BUTTON_PINS'].items():
         level_buttons[key] = value
          # register pin as input with pulldown for raspi
-        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(int(value), GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     print("found level buttons:", level_buttons)
 
 def temperature_sensor_init():
