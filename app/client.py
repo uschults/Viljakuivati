@@ -105,13 +105,13 @@ def temperature_sensor_init():
     # old for list
     #return device_folders
 
-def level_btn_callback(e):
-    print(e)
-    print("LEVEL BUTTON PRESSED")
+def level_btn_callback(pin):
+    print("level pin", pin)
     return 0
 
 
-def feedback_callback():
+def feedback_callback(pin):
+    print("feedback pin", pin)
     return 0
     
 def connect_mqtt():
