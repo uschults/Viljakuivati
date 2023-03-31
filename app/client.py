@@ -56,11 +56,6 @@ def get_motors(motor_topics):
         motor_topics[key] = values_in_list  # turn to int 
         for pin in values_in_list:
             GPIO.setup(int(pin), GPIO.OUT) # what if it cant be cast to int
-
-        # register pin as output for raspi
-
-        # use this when using list
-        #motor_topics.append(f"mootor/{key}")
     print("found motors:", motor_topics)
 
 def get_buttons(level_buttons):
@@ -102,12 +97,12 @@ def temperature_sensor_init():
     #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
     #print(sub_folders)
 
-    # old for list
+    # old for lists
     #return device_folders
 
 def rising_level_btn_callback(pin):
     global client
-    print("level pin", pin)
+    #print("level pin", pin)
     if(GPIO.input(pin)):
         publish(client, "puuteandur/punker", "TÄIS")
     else:
@@ -155,7 +150,7 @@ def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     #print(data)
-
+    temp_topic = str(msg.topic)[0:6]
     if(data == "update"):
         print("starting update")
         client.loop_stop()
@@ -167,9 +162,9 @@ def on_message(client, userdata, msg):
         print("restarting") 
         call(["sudo", "systemctl", "restart", "kuivati.service"])
 
-    temp_topic = str(msg.topic)[0:6]
+    
     #print(temp_topic)
-    if(temp_topic == "mootor"):
+    elif(temp_topic == "mootor"):
         if(data=="true"):
             motor_control(msg.topic, True)
         else:
@@ -195,9 +190,6 @@ def publish(client, topic, msg ):
         print(f"Failed to send message to topic {topic}")
 
 def get_temps(client):
-    #time.sleep(0.2)
-    #temp = read_temp.read_temperature(device_folders[0]+ '/w1_slave')
-    #return temp
     while temp_sensors:
         id = 0
         for sensor in temp_sensors.keys():
@@ -211,7 +203,7 @@ def get_temps(client):
 
 def main():
     global client
-    #temporary for testing
+
     get_motors(motor_topics)
     get_buttons(level_buttons)
     get_feedback(feedback_inputs)
@@ -219,21 +211,14 @@ def main():
     temperature_sensor_init()
     client = mqtt_init()
     
+
     temp_thread = Thread(target = get_temps, args=[client])
     temp_thread.start()
         
 if __name__ == "__main__":
     try:
         main()
-        # VVV these should be in main
     except KeyboardInterrupt:
         print("Exiting")
         GPIO.cleanup()
         sys.exit(0)
-
-    #mqtt init
-    #client = mqtt_init()
-    #auto detect temperature sensors and save
-    #device_folders = temperature_sensor_init()
-    #publish(client)
-    #main(client)
