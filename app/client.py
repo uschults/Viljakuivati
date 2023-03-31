@@ -112,29 +112,10 @@ def rising_level_btn_callback(pin):
         publish(client, "puuteandur/punker", "TÄIS")
     else:
         publish(client, "puuteandur/punker", "tühi")
-    #puuteandur_status = 0 # 0 = tühi
-        # 0 if not pressed, status 0 if empty 
-        # sinine to pin 5
-        # must to pin 6
-        # pullup from 6 to 3.3v
-        
-    #if(not GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==1):
-    #    print("PUNKER SAI TÜHJAKS")
-    #    puuteandur_status = 0
-    #    publish(client, "puuteandur/punker", "Tühi")
-    #    
-    #elif(GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==0):
-    #    print("PUNKER SAI TÄIS")
-    #    puuteandur_status = 1 
-    #    publish(client, "puuteandur/punker", "TÄIS")
-
-
-    return 0
 
 
 def feedback_callback(pin):
     print("feedback pin", pin)
-    return 0
     
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -194,7 +175,7 @@ def on_message(client, userdata, msg):
         else:
             motor_control(msg.topic, False)
     
-    elif(temp_topic == "tuled"):
+    elif(temp_topic == "tuled1"):
         print("switch lights")
 
 
