@@ -51,8 +51,9 @@ password = 'admin'
 def get_motors(motor_topics):
     #read from config file to list
     for key, value in config['MOTOR_PINS'].items():
-        motor_topics[key] = value.split(",")
-        GPIO.setup(motor_topics[key], GPIO.OUT)
+        values_in_list = value.split(",")
+        motor_topics[key] =values_in_list
+        GPIO.setup(motor_topics[values_in_list], GPIO.OUT)
 
         # register pin as output for raspi
 
