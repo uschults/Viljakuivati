@@ -185,12 +185,12 @@ def main(client):
         # must to pin 6
         # pullup from 6 to 3.3v
         
-        if(not int(GPIO.input(level_buttons['btn1'])) and puuteandur_status==1):
+        if(not GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==1):
             print("PUNKER SAI TÜHJAKS")
             puuteandur_status = 0
             publish(client, "puuteandur/punker", "Tühi")
             
-        elif(int(GPIO.input(level_buttons['btn1'])) and puuteandur_status==0):
+        elif(GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==0):
             print("PUNKER SAI TÄIS")
             puuteandur_status = 1 
             publish(client, "puuteandur/punker", "TÄIS")
