@@ -119,6 +119,7 @@ def connect_mqtt():
 
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
+    print("Turning motor", state)
     GPIO.output(motor_topics[topic][not state], 1)
     time.sleep(0.2)
     GPIO.output(motor_topics[topic][not state], 0)
@@ -138,7 +139,8 @@ def on_message(client, userdata, msg):
         print("restarting")
         call(["sudo", "systemctl", "restart", "kuivati.service"])
     
-    temp_topic = msg.topic[0:5]
+    temp_topic = str(msg.topic)[0:5]
+    print(temp_topic)
     if(temp_topic == "mootor"):
         if(data=="true"):
             motor_control(msg.topic, True)
