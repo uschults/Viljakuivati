@@ -42,6 +42,7 @@ temperature_topics = ["kuivati/temp1", "kuivati/temp2"]
 motor_topics = {}
 level_buttons = {}
 temp_sensors = {}
+feedback_inputs = {}
 
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
@@ -65,10 +66,22 @@ def get_motors(motor_topics):
 def get_buttons(level_buttons):
     #read from config file to list
     for key, value in config['BUTTON_PINS'].items():
+        value = int(value)
         level_buttons[key] = value
          # register pin as input with pulldown for raspi
-        GPIO.setup(int(value), GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.add_event_detect(value, GPIO.RISING, callback=level_btn_callback, bouncetime=100)
+
     print("found level buttons:", level_buttons)
+
+def get_feedback(feedback_inputs):
+    for key, value in config['FEEDBACK_PINS'].items():
+        value = int(value)
+        feedback_inputs[key] = value
+         # register pin as input with pulldown for raspi
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.add_event_detect(value, GPIO.RISING, callback=feedback_callback, bouncetime=100)
+    print("found feedbacks:", feedback_inputs)
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -92,6 +105,13 @@ def temperature_sensor_init():
     # old for list
     #return device_folders
 
+def level_btn_callback():
+    print("LEVEL BUTTON PRESSED")
+    return 0
+
+
+def feedback_callback():
+    return 0
     
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -105,7 +125,8 @@ def connect_mqtt():
                 client.subscribe(motor)
             # subscribe for update button
             client.subscribe("update")
-                
+            # subscribe for lights
+            #client.subscribe("tuled1")
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -137,9 +158,11 @@ def on_message(client, userdata, msg):
         GPIO.cleanup()
         msg = gitupdater.pull()
         print(msg)
-        print("restarting")
+
+        # Shouldn't restart if already up to date
+        print("restarting") 
         call(["sudo", "systemctl", "restart", "kuivati.service"])
-    
+
     temp_topic = str(msg.topic)[0:6]
     print(temp_topic)
     if(temp_topic == "mootor"):
@@ -147,6 +170,9 @@ def on_message(client, userdata, msg):
             motor_control(msg.topic, True)
         else:
             motor_control(msg.topic, False)
+    
+    elif(temp_topic == "tuled"):
+        print("switch lights")
 
 
 def mqtt_init():
