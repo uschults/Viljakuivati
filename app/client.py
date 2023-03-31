@@ -205,6 +205,7 @@ if __name__ == "__main__":
 
         # VVV these should be in main
         get_motors(motor_topics)
+        get_buttons(level_buttons)
         fo = temperature_sensor_init()
         client = mqtt_init()
         
