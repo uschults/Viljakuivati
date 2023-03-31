@@ -151,6 +151,7 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     #print(data)
     temp_topic = str(msg.topic)[0:6]
+    print(temp_topic)
     if(data == "update"):
         print("starting update")
         client.loop_stop()
