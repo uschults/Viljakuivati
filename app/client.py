@@ -70,7 +70,7 @@ def get_buttons(level_buttons):
         level_buttons[key] = value
          # register pin as input with pulldown for raspi
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(value, GPIO.RISING, callback=level_btn_callback, bouncetime=100)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=100)
 
     print("found level buttons:", level_buttons)
 
@@ -80,7 +80,7 @@ def get_feedback(feedback_inputs):
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(value, GPIO.RISING, callback=feedback_callback, bouncetime=100)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=100)
     print("found feedbacks:", feedback_inputs)
 
 def temperature_sensor_init():
@@ -105,8 +105,30 @@ def temperature_sensor_init():
     # old for list
     #return device_folders
 
-def level_btn_callback(pin):
+def rising_level_btn_callback(pin):
+    global client
     print("level pin", pin)
+    if(GPIO.input(pin)):
+        publish(client, "puuteandur/punker", "tühi")
+    else:
+        publish(client, "puuteandur/punker", "TÄIS")
+    #puuteandur_status = 0 # 0 = tühi
+        # 0 if not pressed, status 0 if empty 
+        # sinine to pin 5
+        # must to pin 6
+        # pullup from 6 to 3.3v
+        
+    #if(not GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==1):
+    #    print("PUNKER SAI TÜHJAKS")
+    #    puuteandur_status = 0
+    #    publish(client, "puuteandur/punker", "Tühi")
+    #    
+    #elif(GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==0):
+    #    print("PUNKER SAI TÄIS")
+    #    puuteandur_status = 1 
+    #    publish(client, "puuteandur/punker", "TÄIS")
+
+
     return 0
 
 
@@ -199,52 +221,30 @@ def get_temps(client):
         id = 0
         for sensor in temp_sensors.keys():
             temp = read_temp.read_temperature(sensor)
-            print(f"{sensor} : {temperature_topics[id]} :  {temp}")
+            #print(f"{sensor} : {temperature_topics[id]} :  {temp}")
             publish(client, temperature_topics[id], temp)
             id+=1
     # mayube try-except or smth needed
     print("No temp sensors")
 
 
-def main(client):
+def main():
+    global client
     #temporary for testing
-    puuteandur_status = 0 # 0 = tühi
-    while True:
-        # 0 if not pressed, status 0 if empty 
-        # sinine to pin 5
-        # must to pin 6
-        # pullup from 6 to 3.3v
-        
-        if(not GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==1):
-            print("PUNKER SAI TÜHJAKS")
-            puuteandur_status = 0
-            publish(client, "puuteandur/punker", "Tühi")
-            
-        elif(GPIO.input(int(level_buttons['btn1'])) and puuteandur_status==0):
-            print("PUNKER SAI TÄIS")
-            puuteandur_status = 1 
-            publish(client, "puuteandur/punker", "TÄIS")
-        
+    get_motors(motor_topics)
+    get_buttons(level_buttons)
+    get_feedback(feedback_inputs)
 
+    temperature_sensor_init()
+    client = mqtt_init()
+    
+    temp_thread = Thread(target = get_temps, args=[client])
+    temp_thread.start()
         
-        
-
 if __name__ == "__main__":
     try:
-        #main()
-
+        main()
         # VVV these should be in main
-        get_motors(motor_topics)
-        get_buttons(level_buttons)
-        fo = temperature_sensor_init()
-        client = mqtt_init()
-        
-        temp_thread = Thread(target = get_temps, args=[client])
-        temp_thread.start()
-
-        print("starting main")
-        main(client)
-        
     except KeyboardInterrupt:
         print("Exiting")
         GPIO.cleanup()
