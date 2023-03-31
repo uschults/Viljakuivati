@@ -52,7 +52,7 @@ def get_motors(motor_topics):
     #read from config file to list
     for key, value in config['MOTOR_PINS'].items():
         values_in_list = value.split(",")
-        motor_topics[key] =values_in_list
+        motor_topics[key] = values_in_list  # turn to int 
         for pin in values_in_list:
             GPIO.setup(int(pin), GPIO.OUT) # what if it cant be cast to int
 
@@ -120,9 +120,10 @@ def connect_mqtt():
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
     print("Turning motor", state)
-    GPIO.output(motor_topics[topic][not state], 1)
+    print(topic, int(motor_topics[topic][not state]))
+    GPIO.output(int(motor_topics[topic][not state]), 1)
     time.sleep(0.2)
-    GPIO.output(motor_topics[topic][not state], 0)
+    GPIO.output(int(motor_topics[topic][not state]), 0)
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
