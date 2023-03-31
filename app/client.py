@@ -109,9 +109,9 @@ def rising_level_btn_callback(pin):
     global client
     print("level pin", pin)
     if(GPIO.input(pin)):
-        publish(client, "puuteandur/punker", "tühi")
-    else:
         publish(client, "puuteandur/punker", "TÄIS")
+    else:
+        publish(client, "puuteandur/punker", "tühi")
     #puuteandur_status = 0 # 0 = tühi
         # 0 if not pressed, status 0 if empty 
         # sinine to pin 5
