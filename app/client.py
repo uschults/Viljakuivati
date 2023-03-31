@@ -54,7 +54,7 @@ def get_motors(motor_topics):
         values_in_list = value.split(",")
         motor_topics[key] =values_in_list
         for pin in values_in_list:
-            GPIO.setup(pin, GPIO.OUT)
+            GPIO.setup(int(pin), GPIO.OUT)
 
         # register pin as output for raspi
 
