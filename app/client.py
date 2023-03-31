@@ -105,7 +105,8 @@ def temperature_sensor_init():
     # old for list
     #return device_folders
 
-def level_btn_callback():
+def level_btn_callback(e):
+    print(e)
     print("LEVEL BUTTON PRESSED")
     return 0
 
