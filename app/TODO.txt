@@ -3,5 +3,6 @@ turn all motors off
 temp sensor serials matched to topic ?
 
 respond if update succesful.
+update to different service - can update all the times
 
 initial button state

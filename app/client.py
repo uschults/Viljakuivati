@@ -213,13 +213,13 @@ def get_temps():
 
 def main():
     global client
-
+    client = mqtt_init()
     # outputs and inputs init
     motor_init(motor_topics)
     button_init(level_buttons)
     feedback_init(feedback_inputs)
     temperature_sensor_init()
-    client = mqtt_init()
+    
     
     # Separate thread for reading different temp sensors values
     temp_thread = Thread(target = get_temps)
