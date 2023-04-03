@@ -67,7 +67,7 @@ def button_init(level_buttons):
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # get initial button state
         rising_level_btn_callback(value)
-        GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=100)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=300)
 
     print("found level buttons:", level_buttons)
 
@@ -79,7 +79,7 @@ def feedback_init(feedback_inputs):
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # get initial feedback state
         # ...
-        GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=100)
+        GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=300)
     print("found feedbacks:", feedback_inputs)
 
 def temperature_sensor_init():
