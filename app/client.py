@@ -79,7 +79,7 @@ def feedback_init(feedback_inputs):
         #GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # get initial feedback state
-        # ...
+        feedback_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=300)
     print("found feedbacks:", feedback_inputs)
 
