@@ -108,7 +108,7 @@ def rising_level_btn_callback(pin):
     #print("level pin", pin)
 
     # find topic releated to the pin
-    for key, value in level_buttons.iteritems():
+    for key, value in level_buttons.items():
         if value == pin:
             if(GPIO.input(pin)):
                 publish(key, "TÄIS")
@@ -118,7 +118,7 @@ def rising_level_btn_callback(pin):
 
 def feedback_callback(pin):
     print("feedback pin", pin)
-    for key, value in level_buttons.iteritems():
+    for key, value in level_buttons.items():
         if value == pin:
             if(GPIO.input(pin)):
                 publish(key, "ON")
