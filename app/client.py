@@ -119,7 +119,7 @@ def rising_level_btn_callback(pin):
 
 def feedback_callback(pin):
     print("feedback pin", pin)
-    time.sleep(0.4)
+    time.sleep(0.5)
     for key, value in feedback_inputs.items():
         if value == pin:
             if(GPIO.input(pin)):
