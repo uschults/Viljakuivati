@@ -37,7 +37,7 @@ broker = '80.250.119.25'
 port = 1883
 
 # Topics in server
-temperature_topics = ["kuivati/temp1", "kuivati/temp2"]
+temperature_topics = ["temp1", "temp2"]
 # dictionary holds motor state
 motor_topics = {}
 level_buttons = {}
@@ -118,7 +118,7 @@ def rising_level_btn_callback(pin):
 
 def feedback_callback(pin):
     print("feedback pin", pin)
-    for key, value in level_buttons.items():
+    for key, value in feedback_inputs.items():
         if value == pin:
             if(GPIO.input(pin)):
                 publish(key, "ON")
