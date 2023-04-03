@@ -49,7 +49,7 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
-def get_motors(motor_topics):
+def motor_init(motor_topics):
     #read from config file to list
     for key, value in config['MOTOR_PINS'].items():
         values_in_list = value.split(",")
@@ -58,23 +58,27 @@ def get_motors(motor_topics):
             GPIO.setup(int(pin), GPIO.OUT) # what if it cant be cast to int
     print("found motors:", motor_topics)
 
-def get_buttons(level_buttons):
+def button_init(level_buttons):
     #read from config file to list
     for key, value in config['BUTTON_PINS'].items():
         value = int(value)
         level_buttons[key] = value
          # register pin as input with pulldown for raspi
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # get initial button state
+        rising_level_btn_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=100)
 
     print("found level buttons:", level_buttons)
 
-def get_feedback(feedback_inputs):
+def feedback_init(feedback_inputs):
     for key, value in config['FEEDBACK_PINS'].items():
         value = int(value)
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        # get initial feedback state
+        # ...
         GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=100)
     print("found feedbacks:", feedback_inputs)
 
@@ -101,16 +105,26 @@ def temperature_sensor_init():
     #return device_folders
 
 def rising_level_btn_callback(pin):
-    global client
     #print("level pin", pin)
-    if(GPIO.input(pin)):
-        publish(client, "puuteandur/punker", "TÄIS")
-    else:
-        publish(client, "puuteandur/punker", "tühi")
 
+    # find topic releated to the pin
+    for key, value in level_buttons.iteritems():
+        if value == pin:
+            if(GPIO.input(pin)):
+                publish(key, "TÄIS")
+            else:
+                publish(key, "tühi")
+            break
 
 def feedback_callback(pin):
     print("feedback pin", pin)
+    for key, value in level_buttons.iteritems():
+        if value == pin:
+            if(GPIO.input(pin)):
+                publish(key, "ON")
+            else:
+                publish(key, "OFF")
+            break
     
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
@@ -136,7 +150,6 @@ def connect_mqtt():
     client.connect(broker, port)
     return client
 
-
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
     print("Turning motor", state)
@@ -151,7 +164,6 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     #print(data)
     temp_topic = str(msg.topic)[0:6]
-    print(temp_topic)
     if(data == "update"):
         print("starting update")
         client.loop_stop()
@@ -163,8 +175,6 @@ def on_message(client, userdata, msg):
         print("restarting") 
         call(["sudo", "systemctl", "restart", "kuivati.service"])
 
-    
-    #print(temp_topic)
     elif(temp_topic == "mootor"):
         if(data=="true"):
             motor_control(msg.topic, True)
@@ -174,14 +184,13 @@ def on_message(client, userdata, msg):
     elif(temp_topic == "tuled1"):
         print("switch lights")
 
-
 def mqtt_init():
     client = connect_mqtt()
     client.loop_start()
     return client
 
-
-def publish(client, topic, msg ):
+def publish(topic, msg):
+    global client
     result = client.publish(topic, msg)
     # result: [0, 1]
     status = result[0]
@@ -190,13 +199,13 @@ def publish(client, topic, msg ):
     else:
         print(f"Failed to send message to topic {topic}")
 
-def get_temps(client):
+def get_temps():
     while temp_sensors:
         id = 0
         for sensor in temp_sensors.keys():
             temp = read_temp.read_temperature(sensor)
             #print(f"{sensor} : {temperature_topics[id]} :  {temp}")
-            publish(client, temperature_topics[id], temp)
+            publish( temperature_topics[id], temp)
             id+=1
     # mayube try-except or smth needed
     print("No temp sensors")
@@ -205,15 +214,16 @@ def get_temps(client):
 def main():
     global client
 
-    get_motors(motor_topics)
-    get_buttons(level_buttons)
-    get_feedback(feedback_inputs)
-
+    # outputs and inputs init
+    motor_init(motor_topics)
+    button_init(level_buttons)
+    feedback_init(feedback_inputs)
     temperature_sensor_init()
     client = mqtt_init()
     
-
-    temp_thread = Thread(target = get_temps, args=[client])
+    # Separate thread for reading different temp sensors values
+    temp_thread = Thread(target = get_temps)
+    #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
         
 if __name__ == "__main__":
