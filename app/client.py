@@ -151,6 +151,7 @@ def connect_mqtt():
             #client.subscribe("update")
             # subscribe for lights
             #client.subscribe("tuled1")
+            client.subscribe("check1")
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -194,6 +195,10 @@ def on_message(client, userdata, msg):
     
     elif(temp_topic == "tuled1"):
         print("switch lights")
+
+    elif(temp_topic == "check1"):
+        print("connection check")
+        publish("pistate", "Online")
 
 def mqtt_init():
     client = connect_mqtt()
