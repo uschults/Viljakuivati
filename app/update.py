@@ -26,6 +26,8 @@ def on_message(client, userdata, msg):
             print("restarting") 
             call(["sudo", "systemctl", "restart", "kuivati.service"])
 
+            #answer
+
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
