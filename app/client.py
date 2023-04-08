@@ -107,7 +107,6 @@ def temperature_sensor_init():
 
 def rising_level_btn_callback(pin):
     #print("level pin", pin)
-
     # find topic releated to the pin
     for key, value in level_buttons.items():
         if value == pin:
