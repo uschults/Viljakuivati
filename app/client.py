@@ -131,7 +131,7 @@ def feedback_callback(pin):
     for key, value in feedback_inputs.items():
         if value == pin:
             if(GPIO.input(pin)):
-                publish(key, "off")
+                publish(key, "OFF")
             else:
                 publish(key, "ON")
             break
