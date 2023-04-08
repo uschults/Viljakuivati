@@ -140,6 +140,7 @@ def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT Broker!")
+            publish("pistate", "Online")
             # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             # maybe read directly from config??
@@ -245,6 +246,7 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+        publish("pistate", "Offline")
         print("Exiting")
         GPIO.cleanup()
         sys.exit(0)

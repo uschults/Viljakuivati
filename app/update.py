@@ -25,8 +25,17 @@ def on_message(client, userdata, msg):
             if(not msg == "Already up to date."):
                 print("restarting") 
                 call(["sudo", "systemctl", "restart", "kuivati.service"])
-            
+                publish(client, "pistate", "Offline")
             #answer
+def publish(client, topic, msg):
+    result = client.publish(topic, msg)
+    # result: [0, 1]
+    status = result[0]
+    if status == 0:
+        print(f"Send `{msg}` to topic `{topic}`")
+    else:
+        print(f"Failed to send message to topic {topic}")
+
 
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
