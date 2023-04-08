@@ -2,6 +2,7 @@ from paho.mqtt import client as mqtt_client
 import RPi.GPIO as GPIO
 from subprocess import call
 import git
+import time
 import random
 
 gitupdater = git.cmd.Git("https://github.com/uschults/Viljakuivati.git")
@@ -50,3 +51,6 @@ def mqtt_init():
 
     
 client = mqtt_init()
+
+while (True):
+    time.sleep(1)

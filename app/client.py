@@ -139,7 +139,7 @@ def connect_mqtt():
                 print(motor)
                 client.subscribe(motor)
             # subscribe for update button
-            client.subscribe("update")
+            #client.subscribe("update")
             # subscribe for lights
             client.subscribe("tuled1")
         else:
