@@ -19,7 +19,6 @@ def on_message(client, userdata, msg):
     if(data == "update"):
             print("starting update")
             client.loop_stop()
-            GPIO.cleanup()
             msg = gitupdater.pull()
             print(msg)
             # Shouldn't restart if already up to date
