@@ -64,13 +64,16 @@ def button_init(level_buttons):
     for key, value in config['BUTTON_PINS'].items():
         value = int(value)
         level_buttons[key] = value
+
+    print("found level buttons:", level_buttons)
+    for key, value in level_buttons.items():
          # register pin as input with pulldown for raspi
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # get initial button state
         rising_level_btn_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=400)
 
-    print("found level buttons:", level_buttons)
+   
 
 def feedback_init(feedback_inputs):
     for key, value in config['FEEDBACK_PINS'].items():
@@ -83,7 +86,9 @@ def feedback_init(feedback_inputs):
     for key, value in feedback_inputs.items():
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # get initial feedback state
-        feedback_callback(value)
+
+        # cant publish bedf
+        #feedback_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=400)
     
 
@@ -144,7 +149,7 @@ def connect_mqtt():
             # subscribe for update button
             #client.subscribe("update")
             # subscribe for lights
-            client.subscribe("tuled1")
+            #client.subscribe("tuled1")
         else:
             print("Failed to connect, return code %d\n", rc)
 
@@ -218,9 +223,10 @@ def get_temps():
 
 def main():
     global client
+    motor_init(motor_topics)
     client = mqtt_init()
     # outputs and inputs init
-    motor_init(motor_topics)
+    
     button_init(level_buttons)
     feedback_init(feedback_inputs)
     temperature_sensor_init()
