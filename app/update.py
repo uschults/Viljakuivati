@@ -13,9 +13,9 @@ broker = '80.250.119.25'
 port = 1883
 
 def on_message(client, userdata, msg):
-    print(msg.topic+" --  "+str(msg.payload))
+    #print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
-    print(data)
+    #print(data)
     if(data == "update"):
             print("starting update")
            
