@@ -37,7 +37,7 @@ broker = '80.250.119.25'
 port = 1883
 
 # Topics in server
-temperature_topics = ["temp1", "temp2"]
+temperature_topics = ["temp1", "temp2", "temp3"]
 # dictionary holds motor state
 motor_topics = {}
 level_buttons = {}
@@ -166,18 +166,18 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     #print(data)
     temp_topic = str(msg.topic)[0:6]
-    if(data == "update"):
-        print("starting update")
-        client.loop_stop()
-        GPIO.cleanup()
-        msg = gitupdater.pull()
-        print(msg)
+    # if(data == "update"):
+    #     print("starting update")
+    #     client.loop_stop()
+    #     GPIO.cleanup()
+    #     msg = gitupdater.pull()
+    #     print(msg)
 
-        # Shouldn't restart if already up to date
-        print("restarting") 
-        call(["sudo", "systemctl", "restart", "kuivati.service"])
+    #     # Shouldn't restart if already up to date
+    #     print("restarting") 
+    #     call(["sudo", "systemctl", "restart", "kuivati.service"])
 
-    elif(temp_topic == "mootor"):
+    if(temp_topic == "mootor"):
         if(data=="true"):
             motor_control(msg.topic, True)
         else:
