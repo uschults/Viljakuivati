@@ -133,7 +133,7 @@ def feedback_callback(pin):
             if(GPIO.input(pin)):
                 publish(key, "OFF")
             else:
-                publish(key, "ON!")
+                publish(key, "ON")
             break
     
 def connect_mqtt():
