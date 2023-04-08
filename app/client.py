@@ -78,12 +78,14 @@ def feedback_init(feedback_inputs):
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         #GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    print("found feedbacks:", feedback_inputs)
+
     for key, value in feedback_inputs:
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # get initial feedback state
         feedback_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=400)
-    print("found feedbacks:", feedback_inputs)
+    
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
