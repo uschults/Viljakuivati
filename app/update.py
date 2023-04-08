@@ -18,13 +18,13 @@ def on_message(client, userdata, msg):
     print(data)
     if(data == "update"):
             print("starting update")
-            client.loop_stop()
+           
             msg = gitupdater.pull()
             print(msg)
             # Shouldn't restart if already up to date
             print("restarting") 
             call(["sudo", "systemctl", "restart", "kuivati.service"])
-            client.loop_start()
+            
             #answer
 
 def connect_mqtt():
