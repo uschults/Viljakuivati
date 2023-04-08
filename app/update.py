@@ -15,6 +15,7 @@ port = 1883
 def on_message(client, userdata, msg):
     print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
+    print(data)
     if(data == "update"):
             print("starting update")
             client.loop_stop()
