@@ -21,7 +21,6 @@ def on_message(client, userdata, msg):
             GPIO.cleanup()
             msg = gitupdater.pull()
             print(msg)
-
             # Shouldn't restart if already up to date
             print("restarting") 
             call(["sudo", "systemctl", "restart", "kuivati.service"])
@@ -55,4 +54,4 @@ def mqtt_init():
 client = mqtt_init()
 
 while (True):
-    time.sleep(1)
+    pass

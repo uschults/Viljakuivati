@@ -78,6 +78,7 @@ def feedback_init(feedback_inputs):
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         #GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    for key, value in feedback_inputs:
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # get initial feedback state
         feedback_callback(value)
