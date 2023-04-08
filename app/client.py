@@ -122,7 +122,7 @@ def rising_level_btn_callback(pin):
             if(GPIO.input(pin)):
                 publish(key, "TÄIS")
             else:
-                publish(key, "tühi")
+                publish(key, "TÜHI")
             break
 
 def feedback_callback(pin):
