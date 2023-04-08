@@ -197,7 +197,7 @@ def on_message(client, userdata, msg):
         print("switch lights")
 
     elif(temp_topic == "check1"):
-        print("connection check")
+        print("Connection check")
         publish("pistate", "Online")
 
 def mqtt_init():
