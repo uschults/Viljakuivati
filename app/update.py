@@ -22,8 +22,9 @@ def on_message(client, userdata, msg):
             msg = gitupdater.pull()
             print(msg)
             # Shouldn't restart if already up to date
-            print("restarting") 
-            call(["sudo", "systemctl", "restart", "kuivati.service"])
+            if(not msg == "Already up to date."):
+                print("restarting") 
+                call(["sudo", "systemctl", "restart", "kuivati.service"])
             
             #answer
 
