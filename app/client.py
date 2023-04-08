@@ -223,6 +223,7 @@ def get_temps():
 
 def main():
     global client
+    # motor_init before mqtt or iter error
     motor_init(motor_topics)
     client = mqtt_init()
     # outputs and inputs init
@@ -236,7 +237,10 @@ def main():
     temp_thread = Thread(target = get_temps)
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
-        
+    
+    while (True):
+        pass
+
 if __name__ == "__main__":
     try:
         main()
