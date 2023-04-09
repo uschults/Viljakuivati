@@ -195,7 +195,7 @@ def on_message(client, userdata, msg):
     
     elif(temp_topic == "tuled1"):
         print("switch lights")
-        publish("mootor1_in", "Off")
+        publish("mootor1_in", "false")
 
     elif(msg.topic == "check1"):
         print("Connection check")
