@@ -167,7 +167,7 @@ def motor_control(topic, state):
     print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
     GPIO.output(int(motor_topics[topic][not state]), 1)
-    time.sleep(0.2)
+    time.sleep(2)
     GPIO.output(int(motor_topics[topic][not state]), 0)
 
 # The callback for when a PUBLISH message is received from the server.
