@@ -66,6 +66,7 @@ def button_init(level_buttons):
         level_buttons[key] = value
 
     print("found level buttons:", level_buttons)
+    
     for key, value in level_buttons.items():
          # register pin as input with pulldown for raspi
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -85,10 +86,11 @@ def feedback_init(feedback_inputs):
 
     for key, value in feedback_inputs.items():
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        # get initial feedback state
 
-        # cant publish bedf
-        #feedback_callback(value)
+        # get initial feedback state
+        # cant publish before dict is ready
+        feedback_callback(value)
+
         GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=400)
     
 
@@ -103,16 +105,6 @@ def temperature_sensor_init():
 
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
-
-    #device_file = device_folder + '/w1_slave'
-
-    ###if glob doesnt find all folders, use pref scandir or listdir. doesn't find folders with 28* yet..
-    #sub_folders = [name for name in os.listdir('/sys/bus/w1/devices/2*') if os.path.isdir(os.path.join('/sys/bus/w1/devices/', name))]
-    #list_subfolders_with_paths = [f.path for f in os.scandir(path) if f.is_dir()]
-    #print(sub_folders)
-
-    # old for lists
-    #return device_folders
 
 def rising_level_btn_callback(pin):
     #print("level pin", pin)
@@ -176,17 +168,6 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     #print(data)
     temp_topic = str(msg.topic)[0:6]
-    # if(data == "update"):
-    #     print("starting update")
-    #     client.loop_stop()
-    #     GPIO.cleanup()
-    #     msg = gitupdater.pull()
-    #     print(msg)
-
-    #     # Shouldn't restart if already up to date
-    #     print("restarting") 
-    #     call(["sudo", "systemctl", "restart", "kuivati.service"])
-
     if(temp_topic == "mootor"):
         if(data=="true"):
             motor_control(msg.topic, True)
