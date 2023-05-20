@@ -2,9 +2,11 @@
 Viljakuivati süsteem, raspi, lõputöö
 
 - app
-põhiprogrammi fail client.py 
-uuendamisteenuse fail update.py
-parameetrite fail configfile.ini
+
+client.py - põhiprogrammi fail\
+update.py - uuendamisteenuse fail\
+configfile.ini - parameetrite fail 
 
 - tests
+
 Erinevate moodulite testimise koodid
