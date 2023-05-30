@@ -17,8 +17,8 @@ port = 1883
 topic = "kuivati/temp1"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
-username = 'urmosc'
-password = 'admin'
+username = ''
+password = ''
 
 def read_temp_raw(device_file):
     f = open(device_file, 'r')

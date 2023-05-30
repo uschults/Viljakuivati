@@ -3,8 +3,8 @@ import paho.mqtt.client as mqtt
 broker = '127.0.0.1'
 port = 1883
 # generate client ID with pub prefix randomly
-username = 'urmosc'
-password = 'admin'
+username = ''
+password = ''
 
 def on_connect(client, userdata, flags, rc):
      if rc == 0:
