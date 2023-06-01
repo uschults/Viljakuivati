@@ -183,7 +183,9 @@ def on_message(client, userdata, msg):
         publish("pistate", "Online")
     
     elif(msg.topic == "fill_container_1" and data == "true"):
-        #pin 40 is the first container
+        fill_thread = Thread(target= fill_container)
+        fill_thread.start()
+"""         #pin 40 is the first container
         if(level_buttons):
             if(not (GPIO.input(40))):
                 print("Programm: täida punker")
@@ -195,7 +197,8 @@ def on_message(client, userdata, msg):
         else:
             publish("teade","Ei ole tasemeandureid")
             publish("fill_container_in", "false")
-            #print("Ei ole tasemeandureid")
+            #print("Ei ole tasemeandureid") """
+        
 
 
 def mqtt_init():
