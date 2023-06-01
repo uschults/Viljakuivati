@@ -182,7 +182,7 @@ def on_message(client, userdata, msg):
         print("Connection check")
         publish("pistate", "Online")
     
-    elif(msg.topic == "fill_container_1" and str(msg.payload) == "true"):
+    elif(msg.topic == "fill_container_1" and data == "true"):
         #pin 40 is the first container
         if(level_buttons):
             if(not (GPIO.input(40))):
