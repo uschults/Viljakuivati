@@ -84,7 +84,7 @@ def feedback_init(feedback_inputs):
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         #GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    print("found feedbacks:", feedback_inputs)
+    #print("found feedbacks:", feedback_inputs)
 
     for key, value in feedback_inputs.items():
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -114,20 +114,20 @@ def rising_level_btn_callback(pin):
     for key, value in level_buttons.items():
         if value == pin:
             if(GPIO.input(pin)):
-                publish(key, "TÄIS")
+                publish(key, "true")
             else:
-                publish(key, "TÜHI")
+                publish(key, "false")
             break
 
 def feedback_callback(pin):
-    print("feedback pin", pin)
+    #print("feedback pin", pin)
     time.sleep(0.5)
     for key, value in feedback_inputs.items():
         if value == pin:
             if(GPIO.input(pin)):
-                publish(key, "OFF")
+                publish(key, "false")
             else:
-                publish(key, "ON!")
+                publish(key, "true")
             break
     
 def connect_mqtt():
