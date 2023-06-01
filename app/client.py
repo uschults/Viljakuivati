@@ -49,6 +49,9 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
+
+program_running = 0
+
 def motor_init(motor_topics):
     #read from config file to list
     for key, value in config['MOTOR_PINS'].items():
@@ -183,21 +186,20 @@ def on_message(client, userdata, msg):
         publish("pistate", "Online")
     
     elif(msg.topic == "fill_container_1" and data == "true"):
-        fill_thread = Thread(target= fill_container)
-        fill_thread.start()
-"""         #pin 40 is the first container
+        #pin 40 is the first container
         if(level_buttons):
             if(not (GPIO.input(40))):
-                print("Programm: täida punker")
+                #print("Programm: täida punker")
                 fill_thread = Thread(target= fill_container)
                 fill_thread.start()
             else:
                 publish("fill_container_in", "false")
-                print("Punker 1 juba täis")
+                publish("teade","Punker juba täis")
+                #print("Punker 1 juba täis")
         else:
-            publish("teade","Ei ole tasemeandureid")
+            publish("teade","Ei ole tasemeandurit")
             publish("fill_container_in", "false")
-            #print("Ei ole tasemeandureid") """
+            #print("Ei ole tasemeandureid")
         
 
 
@@ -226,15 +228,15 @@ def get_temps():
             id+=1
     # mayube try-except or smth needed
     print("No temp sensors")
-
+    publish("teade","Ei ole temperatuuriandureid")
 
 
 def fill_container():
     #pin 40 is the first container
     publish("mootor3_in", "true")
-    #while GPIO.input(40):
-    #    pass
-    time.sleep(5)
+    while GPIO.input(40):
+        pass
+    
     publish("fill_container_in", "false")
     publish("mootor3_in", "false")
     publish("email", "Punker1 sai TÄIS")
@@ -265,6 +267,7 @@ if __name__ == "__main__":
         main()
     except KeyboardInterrupt:
         publish("pistate", "Offline")
-        print("Exiting")
+        publish("teade","Error running main")
+        #print("Exiting")
         GPIO.cleanup()
         sys.exit(0)

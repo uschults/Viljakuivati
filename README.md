@@ -10,3 +10,9 @@ configfile.ini - parameetrite fail
 - tests
 
 Erinevate moodulite testimise koodid
+
+
+
+- todo
+
+logifail\
