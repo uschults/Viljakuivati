@@ -182,7 +182,7 @@ def on_message(client, userdata, msg):
         print("Connection check")
         publish("pistate", "Online")
     
-    elif(msg.topic == "fill_container_1"):
+    elif(msg.topic == "fill_container_1" and msg.payload == "true"):
         #pin 40 is the first container
         if(level_buttons):
             if(not (GPIO.input(40))):
@@ -194,6 +194,7 @@ def on_message(client, userdata, msg):
                 print("Punker 1 juba täis")
         else:
             publish("teade","Ei ole tasemeandureid")
+            publish("fill_container_in", "false")
             #print("Ei ole tasemeandureid")
 
 
