@@ -74,6 +74,7 @@ def button_init(level_buttons):
         rising_level_btn_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=400)
 
+   
 
 def feedback_init(feedback_inputs):
     for key, value in config['FEEDBACK_PINS'].items():
@@ -142,7 +143,6 @@ def connect_mqtt():
             #client.subscribe("update")
             # subscribe for lights
             client.subscribe("tuled1")
-            client.subscribe("fill_container_1")
             client.subscribe("check1")
         else:
             print("Failed to connect, return code %d\n", rc)
@@ -181,21 +181,6 @@ def on_message(client, userdata, msg):
     elif(msg.topic == "check1"):
         print("Connection check")
         publish("pistate", "Online")
-    
-    elif(msg.topic == "fill_container_1"):
-        #pin 40 is the first container
-        if(level_buttons):
-            if(not (GPIO.input(40))):
-                print("Programm: täida punker")
-                fill_thread = Thread(target= fill_container)
-                fill_thread.start()
-            else:
-                publish("fill_container_in", "false")
-                print("Punker 1 juba täis")
-        else:
-            publish("teade","Ei ole tasemeandureid")
-            #print("Ei ole tasemeandureid")
-
 
 def mqtt_init():
     client = connect_mqtt()
@@ -222,18 +207,6 @@ def get_temps():
             id+=1
     # mayube try-except or smth needed
     print("No temp sensors")
-
-
-
-def fill_container():
-    #pin 40 is the first container
-    publish("mootor3_in", "true")
-    #while GPIO.input(40):
-    #    pass
-    time.sleep(5)
-    publish("fill_container_in", "false")
-    publish("mootor3_in", "false")
-    publish("email", "Punker1 sai TÄIS")
 
 
 def main():
