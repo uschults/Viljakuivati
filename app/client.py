@@ -188,7 +188,7 @@ def on_message(client, userdata, msg):
     elif(msg.topic == "fill_container_1" and data == "true"):
         #pin 40 is the first container
         if(level_buttons):
-            if(not (GPIO.input(40))):
+            if(not (GPIO.input(8))):
                 #print("Programm: täida punker")
                 fill_thread = Thread(target= fill_container)
                 fill_thread.start()
@@ -234,7 +234,7 @@ def get_temps():
 def fill_container():
     #pin 40 is the first container
     publish("mootor3_in", "true")
-    while GPIO.input(40):
+    while not GPIO.input(8):
         pass
     
     publish("fill_container_in", "false")
