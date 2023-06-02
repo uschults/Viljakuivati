@@ -72,7 +72,7 @@ def button_init(level_buttons):
     
     for key, value in level_buttons.items():
          # register pin as input with pulldown for raspi, pulldown
-        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # get initial button state
         rising_level_btn_callback(value)
         GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=400)
