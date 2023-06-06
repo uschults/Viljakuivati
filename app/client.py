@@ -139,7 +139,7 @@ def connect_mqtt():
             # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             # maybe read directly from config??
-            publish("teade", motor_topics.keys())
+            publish("teade", motor_topics)
             for motor in motor_topics:
                 client.subscribe(motor)
             client.subscribe("fill_container_1")
