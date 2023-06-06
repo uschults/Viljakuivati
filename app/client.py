@@ -157,9 +157,6 @@ def connect_mqtt():
     return client
 
 def motor_control(topic, state):
-    global program_running
-    program_running = 0
-    
     # toggle relay, if state = true = turn motor on
     #print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
@@ -170,6 +167,7 @@ def motor_control(topic, state):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    global program_running
     #print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     #print(data)
@@ -200,7 +198,8 @@ def on_message(client, userdata, msg):
             publish("fill_container_in", "false")
             #print("Ei ole tasemeandureid")
         
-
+    elif(msg.topic == "fill_container_1" and data == "false"):
+        program_running = 0
 
 def mqtt_init():
     client = connect_mqtt()
