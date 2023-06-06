@@ -214,6 +214,7 @@ def on_message(client, userdata, msg):
     elif(msg.topic == "fill_container_2"):
         if(data == "true"):
             if(not program_running.is_set()):
+                program_running.set()
                 publish("mootor1_in", "true")
                 publish("mootor2_in", "true")
             else:
@@ -222,6 +223,7 @@ def on_message(client, userdata, msg):
         else:
             publish("mootor1_in", "false")
             publish("mootor2_in", "false")
+            program_running.clear()
 
 
 def mqtt_init():
