@@ -208,8 +208,6 @@ def on_message(client, userdata, msg):
             else:
                 publish("teade","Teine program juba käib")
                 publish("fill_container_in", "false")
-        else:
-            program_running.clear()
 
     elif(msg.topic == "fill_container_2"):
         if(data == "true"):
@@ -264,6 +262,7 @@ def fill_container(program_running):
     publish("teade","Program 1 välja lülitatud")
     publish("fill_container_in", "false")
     publish("mootor3_in", "false") 
+    program_running.clear()
     #publish("email", "Punker1 sai TÄIS")
 
 
