@@ -187,6 +187,7 @@ def on_message(client, userdata, msg):
         if(level_buttons):
             if(not (GPIO.input(8))):
                 #print("Programm: täida punker")
+                program_running = 1
                 fill_thread = Thread(target= fill_container)
                 fill_thread.start()
             else:
