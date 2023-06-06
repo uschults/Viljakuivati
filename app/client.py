@@ -167,7 +167,7 @@ def motor_control(topic, state):
     #print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
     activate_relay_thread = Thread(target = activate_relay, args= (topic, state, ))
-    
+    activate_relay_thread.start()
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
