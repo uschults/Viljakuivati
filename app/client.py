@@ -174,7 +174,7 @@ def on_message(client, userdata, msg):
     #print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     #print(data)
-    publish("debug", data)
+    #publish("debug", data)
     #temp_topic = str(msg.topic)[0:6]
     if(msg.topic in motor_topics):
         if(data=="true"):
