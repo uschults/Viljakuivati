@@ -170,6 +170,7 @@ def on_message(client, userdata, msg):
     #print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     #print(data)
+    publish("debug", data)
     temp_topic = str(msg.topic)[0:6]
     if(temp_topic == "mootor"):
         if(data=="true"):
