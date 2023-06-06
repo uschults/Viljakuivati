@@ -256,7 +256,7 @@ def main():
     button_init(level_buttons)
     feedback_init(feedback_inputs)
     temperature_sensor_init()
-    publish("debug", motor_topics)
+    publish("teade", motor_topics.keys())
     
     # Separate thread for reading different temp sensors values
     temp_thread = Thread(target = get_temps)
