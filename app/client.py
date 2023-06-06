@@ -201,6 +201,7 @@ def on_message(client, userdata, msg):
             #print("Ei ole tasemeandureid")
         
     elif(msg.topic == "fill_container_1" and data == "false"):
+        publish("teade","Program 1 välja lülitatud")
         program_running = 0
 
 def mqtt_init():
