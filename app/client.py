@@ -49,6 +49,7 @@ client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
+# Variables for running automation programs
 
 program_running = 0
 
@@ -60,7 +61,7 @@ def motor_init(motor_topics):
         for pin in values_in_list:
             print(pin)
             GPIO.setup(int(pin), GPIO.OUT) # what if it cant be cast to int
-    print("found motors:", motor_topics)
+    #print("found motors:", motor_topics)
 
 def button_init(level_buttons):
     #read from config file to list
@@ -68,7 +69,7 @@ def button_init(level_buttons):
         value = int(value)
         level_buttons[key] = value
 
-    print("found level buttons:", level_buttons)
+    #print("found level buttons:", level_buttons)
     
     for key, value in level_buttons.items():
          # register pin as input with pulldown for raspi, pulldown
@@ -103,7 +104,7 @@ def temperature_sensor_init():
 
     base_dir = '/sys/bus/w1/devices/'
     device_folders = glob.glob(base_dir + '28*')
-    print(device_folders)
+    #print(device_folders)
 
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
@@ -133,22 +134,20 @@ def feedback_callback(pin):
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
-            print("Connected to MQTT Broker!")
+            #print("Connected to MQTT Broker!")
             publish("pistate", "Online")
             # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             # maybe read directly from config??
             for motor in motor_topics:
-                print(motor)
+                #print(motor)
                 client.subscribe(motor)
-            # subscribe for update button
-            #client.subscribe("update")
-            # subscribe for lights
-            client.subscribe("tuled1")
             client.subscribe("fill_container_1")
             client.subscribe("check1")
         else:
-            print("Failed to connect, return code %d\n", rc)
+            with open("logfile.txt") as logfile:
+                logfile.write("Failed to connect, return code %d\n", rc)
+            #print("Failed to connect, return code %d\n", rc)
 
     client = mqtt_client.Client(client_id)
     client.username_pw_set(username, password)
@@ -158,16 +157,20 @@ def connect_mqtt():
     return client
 
 def motor_control(topic, state):
+    global program_running
+    program_running = 0
+    
     # toggle relay, if state = true = turn motor on
-    print("Turning motor", state)
+    #print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
+    
     GPIO.output(int(motor_topics[topic][not state]), 1)
     time.sleep(2)
     GPIO.output(int(motor_topics[topic][not state]), 0)
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic+" --  "+str(msg.payload))
+    #print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     #print(data)
     temp_topic = str(msg.topic)[0:6]
@@ -176,13 +179,9 @@ def on_message(client, userdata, msg):
             motor_control(msg.topic, True)
         else:
             motor_control(msg.topic, False)
-    
-    elif(temp_topic == "tuled1"):
-        print("switch lights")
-        publish("mootor1_in", "false")
 
     elif(msg.topic == "check1"):
-        print("Connection check")
+        #print("Connection check")
         publish("pistate", "Online")
     
     elif(msg.topic == "fill_container_1" and data == "true"):
@@ -216,6 +215,8 @@ def publish(topic, msg):
     if status == 0:
         print(f"Send `{msg}` to topic `{topic}`")
     else:
+        with open("logfile.txt") as logfile:
+                logfile.write(f"Failed to send message to topic {topic}")
         print(f"Failed to send message to topic {topic}")
 
 def get_temps():
@@ -227,19 +228,20 @@ def get_temps():
             publish( temperature_topics[id], temp)
             id+=1
     # mayube try-except or smth needed
-    print("No temp sensors")
+    #print("No temp sensors")
     publish("teade","Ei ole temperatuuriandureid")
 
 
 def fill_container():
     #pin 40 is the first container
     publish("mootor3_in", "true")
-    while not GPIO.input(8):
-        pass
+    while program_running:
+        while not GPIO.input(8):
+            pass
     
     publish("fill_container_in", "false")
     publish("mootor3_in", "false")
-    publish("email", "Punker1 sai TÄIS")
+    #publish("email", "Punker1 sai TÄIS")
 
 
 def main():
