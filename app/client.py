@@ -139,6 +139,7 @@ def connect_mqtt():
             # Subscribing in on_connect() means that if we lose the connection and
             # reconnect then subscriptions will be renewed.
             # maybe read directly from config??
+            publish("teade", motor_topics.keys())
             for motor in motor_topics:
                 #print(motor)
                 client.subscribe(motor)
@@ -256,7 +257,7 @@ def main():
     button_init(level_buttons)
     feedback_init(feedback_inputs)
     temperature_sensor_init()
-    publish("teade", motor_topics.keys())
+    
     
     # Separate thread for reading different temp sensors values
     temp_thread = Thread(target = get_temps)
