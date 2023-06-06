@@ -199,6 +199,7 @@ def on_message(client, userdata, msg):
             #print("Ei ole tasemeandureid")
         
     elif(msg.topic == "fill_container_1" and data == "false"):
+        publish("teade","Lõpetan program 1")
         program_running.clear()
 
 def mqtt_init():
@@ -236,7 +237,7 @@ def fill_container(program_running):
     publish("mootor3_in", "true")
     while program_running.is_set():
         while not GPIO.input(8):
-            pass
+            time.sleep(1)
     publish("teade","Program 1 välja lülitatud")
     publish("fill_container_in", "false")
     publish("mootor3_in", "false") 
