@@ -141,7 +141,6 @@ def connect_mqtt():
             # maybe read directly from config??
             publish("teade", motor_topics.keys())
             for motor in motor_topics:
-                #print(motor)
                 client.subscribe(motor)
             client.subscribe("fill_container_1")
             client.subscribe("check1")
