@@ -17,13 +17,14 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     #print(data)
     if(data == "update"):
-            print("starting update")
+            #print("starting update")
            
             msg = gitupdater.pull()
-            print(msg)
+            #print(msg)
             # Shouldn't restart if already up to date
             if(not msg == "Already up to date."):
-                print("restarting") 
+                #print("restarting") 
+                publish("teade", "System restarting")
                 call(["sudo", "systemctl", "restart", "kuivati.service"])
                 publish(client, "pistate", "Offline")
             #answer
