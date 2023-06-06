@@ -8,7 +8,7 @@ import configparser
 import git
 import RPi.GPIO as GPIO
 
-from threading import Thread
+from threading import Thread, Event
 from subprocess import call
 from paho.mqtt import client as mqtt_client
 
@@ -50,7 +50,7 @@ username = 'urmosc'
 password = 'admin'
 
 # Variables for running automation programs
-program_running = 0
+program_running = Event()
 
 
 def motor_init(motor_topics):
@@ -167,7 +167,6 @@ def motor_control(topic, state):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    global program_running
     #print(msg.topic+" --  "+str(msg.payload))
     data = msg.payload.decode()
     #print(data)
@@ -187,8 +186,8 @@ def on_message(client, userdata, msg):
         if(level_buttons):
             if(not (GPIO.input(8))):
                 #print("Programm: täida punker")
-                program_running = 1
-                fill_thread = Thread(target= fill_container)
+                program_running.set()
+                fill_thread = Thread(target= fill_container, args= (program_running, ))
                 fill_thread.start()
             else:
                 publish("fill_container_in", "false")
@@ -200,7 +199,7 @@ def on_message(client, userdata, msg):
             #print("Ei ole tasemeandureid")
         
     elif(msg.topic == "fill_container_1" and data == "false"):
-        program_running = 0
+        program_running.clear()
 
 def mqtt_init():
     client = connect_mqtt()
@@ -232,11 +231,10 @@ def get_temps():
     publish("teade","Ei ole temperatuuriandureid")
 
 
-def fill_container():
-    global program_running
+def fill_container(program_running):
     #pin 40 is the first container
     publish("mootor3_in", "true")
-    while program_running:
+    while program_running.is_set():
         while not GPIO.input(8):
             pass
     publish("teade","Program 1 välja lülitatud")
