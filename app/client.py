@@ -233,6 +233,7 @@ def get_temps():
 
 
 def fill_container():
+    global program_running
     #pin 40 is the first container
     publish("mootor3_in", "true")
     while program_running:
