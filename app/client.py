@@ -235,10 +235,9 @@ def get_temps():
 def fill_container(program_running):
     #pin 40 is the first container
     publish("mootor3_in", "true")
-    while program_running.is_set():
-        publish("debug",program_running.is_set())
-        while not GPIO.input(8):
-            time.sleep(1)
+    while program_running.is_set() and not GPIO.input(8):
+        publish("debug", program_running.is_set())
+        time.sleep(1)
     publish("teade","Program 1 välja lülitatud")
     publish("fill_container_in", "false")
     publish("mootor3_in", "false") 
