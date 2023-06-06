@@ -236,6 +236,7 @@ def fill_container(program_running):
     #pin 40 is the first container
     publish("mootor3_in", "true")
     while program_running.is_set():
+        publish("debug",program_running.is_set())
         while not GPIO.input(8):
             time.sleep(1)
     publish("teade","Program 1 välja lülitatud")
