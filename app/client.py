@@ -182,24 +182,26 @@ def on_message(client, userdata, msg):
         publish("pistate", "Online")
     
     elif(msg.topic == "fill_container_1" and data == "true"):
-        #pin 40 is the first container
-        if(level_buttons):
-            if(not (GPIO.input(8))):
-                #print("Programm: täida punker")
-                program_running.set()
-                fill_thread = Thread(target= fill_container, args= (program_running, ))
-                fill_thread.start()
+        # check if another program is already running
+        if(not program_running.is_set()):
+            # check if level_buttons are connected
+            # pin 40 is the first container
+            if(level_buttons):
+                if(not (GPIO.input(8))):
+                    #print("Programm: täida punker")
+                    program_running.set()
+                    fill_thread = Thread(target= fill_container, args= (program_running, ))
+                    fill_thread.start()
+                else:
+                    publish("fill_container_in", "false")
+                    publish("teade","Punker juba täis")
+                    #print("Punker 1 juba täis")
             else:
+                publish("teade","Ei ole tasemeandurit")
                 publish("fill_container_in", "false")
-                publish("teade","Punker juba täis")
-                #print("Punker 1 juba täis")
-        else:
-            publish("teade","Ei ole tasemeandurit")
-            publish("fill_container_in", "false")
-            #print("Ei ole tasemeandureid")
+                #print("Ei ole tasemeandureid")
         
     elif(msg.topic == "fill_container_1" and data == "false"):
-        publish("teade","Lõpetan program 1")
         program_running.clear()
 
 def mqtt_init():
@@ -236,8 +238,7 @@ def fill_container(program_running):
     #pin 40 is the first container
     publish("mootor3_in", "true")
     while program_running.is_set() and not GPIO.input(8):
-        publish("debug", program_running.is_set())
-        time.sleep(1)
+        pass
     publish("teade","Program 1 välja lülitatud")
     publish("fill_container_in", "false")
     publish("mootor3_in", "false") 
