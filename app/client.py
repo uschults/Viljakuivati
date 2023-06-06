@@ -157,16 +157,17 @@ def connect_mqtt():
     client.connect(broker, port)
     return client
 
+def activate_relay(topic, state):
+    GPIO.output(int(motor_topics[topic][not state]), 1)
+    time.sleep(2)
+    GPIO.output(int(motor_topics[topic][not state]), 0)
+
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
     #print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
-    start_time = 1
-    if(str(topic)[0:4] == "elev"):
-        start_time = 2
-    GPIO.output(int(motor_topics[topic][not state]), 1)
-    time.sleep(start_time)
-    GPIO.output(int(motor_topics[topic][not state]), 0)
+    activate_relay_thread = Thread(target = activate_relay, args= (topic, state, ))
+    
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
