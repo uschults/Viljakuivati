@@ -144,6 +144,7 @@ def connect_mqtt():
                 client.subscribe(motor)
                 publish("teade", motor)
             client.subscribe("fill_container_1")
+            client.subscribe("fill_container_2")
             client.subscribe("check1")
         else:
             with open("logfile.txt") as logfile:
@@ -161,9 +162,11 @@ def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
     #print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
-    
+    start_time = 1
+    if(str(topic)[0:4] == "elev"):
+        start_time = 2
     GPIO.output(int(motor_topics[topic][not state]), 1)
-    time.sleep(2)
+    time.sleep(start_time)
     GPIO.output(int(motor_topics[topic][not state]), 0)
 
 # The callback for when a PUBLISH message is received from the server.
