@@ -50,9 +50,8 @@ username = 'urmosc'
 password = 'admin'
 
 # Variables for running automation programs
-
-global program_running
 program_running = 0
+
 
 def motor_init(motor_topics):
     #read from config file to list
@@ -201,7 +200,6 @@ def on_message(client, userdata, msg):
             #print("Ei ole tasemeandureid")
         
     elif(msg.topic == "fill_container_1" and data == "false"):
-        
         program_running = 0
 
 def mqtt_init():
