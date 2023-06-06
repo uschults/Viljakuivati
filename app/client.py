@@ -271,8 +271,6 @@ if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        publish("pistate", "Offline")
-        publish("teade","Error running main")
         #print("Exiting")
         GPIO.cleanup()
         sys.exit(0)
