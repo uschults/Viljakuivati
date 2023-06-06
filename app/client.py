@@ -51,6 +51,7 @@ password = 'admin'
 
 # Variables for running automation programs
 
+global program_running
 program_running = 0
 
 def motor_init(motor_topics):
