@@ -88,7 +88,7 @@ def feedback_init(feedback_inputs):
     #print("found feedbacks:", feedback_inputs)
 
     for key, value in feedback_inputs.items():
-        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         # get initial feedback state
         # cant publish before dict is ready
