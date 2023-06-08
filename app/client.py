@@ -39,6 +39,7 @@ port = 1883
 # Topics in server
 temperature_topics = ["temp1", "temp2", "temp3"]
 # dictionary holds motor state
+# motor_topics = { motor1: [pin1, pin2]}
 motor_topics = {}
 level_buttons = {}
 temp_sensors = {}
