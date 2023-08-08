@@ -130,9 +130,12 @@ def feedback_callback(pin):
         if value == pin:
             publish("debug", key)
             if(GPIO.input(pin)):
-                publish(key, "false")
-            else:
                 publish(key, "true")
+                #publish(key, "false")
+            else:
+                
+                publish(key, "false")
+                #publish(key, "true")
             break
     
 def connect_mqtt():
