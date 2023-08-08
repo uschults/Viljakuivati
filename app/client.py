@@ -128,7 +128,6 @@ def feedback_callback(pin):
     
     for key, value in feedback_inputs.items():
         if value == pin:
-            publish("debug", key)
             if(GPIO.input(pin)):
                 publish(key, "false")
             else:
