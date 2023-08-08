@@ -109,6 +109,7 @@ def temperature_sensor_init():
 
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
+    publish("info", folder)
 
 def rising_level_btn_callback(pin):
     #print("level pin", pin)
