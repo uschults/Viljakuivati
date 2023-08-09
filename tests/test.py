@@ -1,3 +1,6 @@
+import datetime
+
+print(datetime.datetime.now())
 
 dic = {"motor1": 10,"motor2": 15}
 
