@@ -38,6 +38,7 @@ port = 1883
 
 # Topics in server
 temperature_topics = ["temp1", "temp2", "temp3"]
+
 # dictionary holds motor state
 # motor_topics = { motor1: [pin1, pin2]}
 motor_topics = {}
@@ -109,7 +110,6 @@ def temperature_sensor_init():
 
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
-    publish("info", folder)
 
 def rising_level_btn_callback(pin):
     #print("level pin", pin)
@@ -125,17 +125,12 @@ def rising_level_btn_callback(pin):
 def feedback_callback(pin):
     #print("feedback pin", pin)
     time.sleep(0.5)
-    
     for key, value in feedback_inputs.items():
         if value == pin:
-            publish("debug", key)
             if(GPIO.input(pin)):
-                publish(key, "true")
-                #publish(key, "false")
-            else:
-                
                 publish(key, "false")
-                #publish(key, "true")
+            else:
+                publish(key, "true")
             break
     
 def connect_mqtt():
