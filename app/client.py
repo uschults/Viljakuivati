@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 from threading import Thread, Event
 from subprocess import call
 from paho.mqtt import client as mqtt_client
+from save_data import save_to_client
 
 #buttonpin = 11
 #outputpin = 29
@@ -54,6 +55,13 @@ password = 'admin'
 # Variables for running automation programs
 program_running = Event()
 
+# ------------------------------------------------------------- #
+# Inits  
+
+def mqtt_init():
+    client = connect_mqtt()
+    client.loop_start()
+    return client
 
 def motor_init(motor_topics):
     #read from config file to list
@@ -87,17 +95,11 @@ def feedback_init(feedback_inputs):
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         #GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    #print("found feedbacks:", feedback_inputs)
 
     for key, value in feedback_inputs.items():
         GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-        # get initial feedback state
-        # cant publish before dict is ready
-        feedback_callback(value)
-
         GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=400)
-    
+    feedback_checks()
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -110,6 +112,9 @@ def temperature_sensor_init():
 
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
+
+# ------------------------------------------------------------- #
+# callbacks
 
 def rising_level_btn_callback(pin):
     #print("level pin", pin)
@@ -132,7 +137,10 @@ def feedback_callback(pin):
             else:
                 publish(key, "false")
             break
-    
+
+# ------------------------------------------------------------- #
+# MQTT communication
+
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
@@ -159,18 +167,6 @@ def connect_mqtt():
     client.connect(broker, port)
     return client
 
-def activate_relay(topic, state):
-    GPIO.output(int(motor_topics[topic][not state]), 1)
-    time.sleep(2)
-    GPIO.output(int(motor_topics[topic][not state]), 0)
-
-def motor_control(topic, state):
-    # toggle relay, if state = true = turn motor on
-    #print("Turning motor", state)
-    #print(topic, int(motor_topics[topic][not state]))
-    activate_relay_thread = Thread(target = activate_relay, args= (topic, state, ))
-    activate_relay_thread.start()
-
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     #print(msg.topic+" --  "+str(msg.payload))
@@ -187,50 +183,7 @@ def on_message(client, userdata, msg):
     elif(msg.topic == "check1"):
         #print("Connection check")
         publish("pistate", "Online")
-    
-    elif(msg.topic == "fill_container_1"):
-        if(data == "true"):
-            # check if another program is already running
-            if(not program_running.is_set()):
-                # check if level_buttons are connected
-                # pin 40 is the first container
-                if(level_buttons):
-                    if(not (GPIO.input(8))):
-                        #print("Programm: täida punker")
-                        program_running.set()
-                        fill_thread = Thread(target= fill_container, args= (program_running, ))
-                        fill_thread.start()
-                    else:
-                        publish("teade","Punker juba täis")
-                        publish("fill_container_in", "false")
-                        #print("Punker 1 juba täis")
-                else:
-                    publish("teade","Ei ole tasemeandurit")
-                    publish("fill_container_in", "false")
-                    #print("Ei ole tasemeandureid")
-            else:
-                publish("teade","Teine program juba käib")
-                publish("fill_container_in", "false")
 
-    elif(msg.topic == "fill_container_2"):
-        if(data == "true"):
-            if(not program_running.is_set()):
-                program_running.set()
-                publish("mootor1_in", "true")
-                publish("mootor2_in", "true")
-            else:
-                publish("teade","Teine program juba käib")
-                publish("fill_container_2_in", "false")
-        else:
-            publish("mootor1_in", "false")
-            publish("mootor2_in", "false")
-            program_running.clear()
-
-
-def mqtt_init():
-    client = connect_mqtt()
-    client.loop_start()
-    return client
 
 def publish(topic, msg):
     global client
@@ -250,12 +203,33 @@ def get_temps():
         for sensor in temp_sensors.keys():
             temp = read_temp.read_temperature(sensor)
             #print(f"{sensor} : {temperature_topics[id]} :  {temp}")
-            publish( temperature_topics[id], temp)
+            publish( temperature_topics[id], temp) 
+
+            # save data ( should save to cloud )
+            # args(file_name, data_value )
+            save_to_client(sensor, temp)
             id+=1
+
     # mayube try-except or smth needed
-    #print("No temp sensors")
     publish("teade","Ei ole temperatuuriandureid")
 
+def activate_relay(topic, state):
+    GPIO.output(int(motor_topics[topic][not state]), 1)
+    time.sleep(2)
+    GPIO.output(int(motor_topics[topic][not state]), 0)
+
+def motor_control(topic, state):
+    # toggle relay, if state = true = turn motor on
+    #print("Turning motor", state)
+    #print(topic, int(motor_topics[topic][not state]))
+    activate_relay_thread = Thread(target = activate_relay, args= (topic, state, ))
+    activate_relay_thread.start()
+
+def feedback_checks():
+    # get initial feedback state
+    # cant publish before dict is ready
+    for key, value in feedback_inputs.items():
+        feedback_callback(value)
 
 def fill_container(program_running):
     #pin 40 is the first container
@@ -286,9 +260,12 @@ def main():
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
+    time_last = 0
     while (True):
-        pass
-
+        time_present = time.time()
+        if((time_present-time_last)>10):
+            feedback_checks()
+        
 if __name__ == "__main__":
     try:
         main()

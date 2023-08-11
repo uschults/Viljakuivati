@@ -1,0 +1,5 @@
+-   temp saving
+-   periodic checks
+    -   feedbacks
+    -   
+-   feedback sends too many reqs
