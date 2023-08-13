@@ -152,8 +152,6 @@ def connect_mqtt():
             #publish("teade", motor_topics)
             for motor in motor_topics:
                 client.subscribe(motor)
-            client.subscribe("fill_container_1")
-            client.subscribe("fill_container_2")
             client.subscribe("check1")
         else:
             with open("logfile.txt") as logfile:
@@ -230,17 +228,6 @@ def feedback_checks():
     # cant publish before dict is ready
     for key, value in feedback_inputs.items():
         feedback_callback(value)
-
-def fill_container(program_running):
-    #pin 40 is the first container
-    publish("mootor3_in", "true")
-    while program_running.is_set() and not GPIO.input(8):
-        pass
-    publish("teade","Program 1 välja lülitatud")
-    publish("fill_container_in", "false")
-    publish("mootor3_in", "false") 
-    program_running.clear()
-    #publish("email", "Punker1 sai TÄIS")
 
 
 def main():

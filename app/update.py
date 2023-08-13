@@ -17,17 +17,24 @@ def on_message(client, userdata, msg):
     data = msg.payload.decode()
     #print(data)
     if(data == "update"):
-            #print("starting update")
-           
-            msg = gitupdater.pull()
-            #print(msg)
-            # Shouldn't restart if already up to date
-            if(not msg == "Already up to date."):
-                #print("restarting") 
-                publish(client, "teade", "System restarting")
-                call(["sudo", "systemctl", "restart", "kuivati.service"])
-                publish(client, "pistate", "Offline")
-            #answer
+        #print("starting update")
+        
+        msg = gitupdater.pull()
+        #print(msg)
+        # Shouldn't restart if already up to date
+        if(not msg == "Already up to date."):
+            #print("restarting") 
+            publish(client, "teade", "System restarting")
+            call(["sudo", "systemctl", "restart", "kuivati.service"])
+            publish(client, "pistate", "Offline")
+        #answer
+    if(data == "restart"):
+        publish(client, "teade", "System restarting")
+        call(["sudo", "systemctl", "restart", "kuivati.service"])
+        publish(client, "pistate", "Offline")
+
+
+
 def publish(client, topic, msg):
     result = client.publish(topic, msg)
     # result: [0, 1]
@@ -44,6 +51,7 @@ def connect_mqtt():
             print("Connected to MQTT Broker!")
             # subscribe for update button
             client.subscribe("update")
+            client.subscribe("restart")
 
         else:
             print("Failed to connect, return code %d\n", rc)
