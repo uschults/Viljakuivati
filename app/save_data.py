@@ -5,7 +5,7 @@ import csv
 def save_to_client (file_name, data_value):
     with open(file_name + ".csv", 'a+') as open_file:
         writer = csv.writer(open_file)
-        writer.writerow(data_value)
+        writer.writerow(list(data_value))
      
 
 def save_to_server ():
