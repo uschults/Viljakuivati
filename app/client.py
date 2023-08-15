@@ -215,8 +215,8 @@ def get_temps():
             # args(file_name, data_value )
             try:
                 save_to_client(topic, float(temp))
-            except Exception:
-                publish("debug", traceback.print_exc())
+            except Exception as error:
+                publish("debug", error)
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
 
