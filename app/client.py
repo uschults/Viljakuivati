@@ -8,6 +8,8 @@ import configparser
 import git
 import RPi.GPIO as GPIO
 
+import traceback
+
 from threading import Thread, Event
 from subprocess import call
 from paho.mqtt import client as mqtt_client
@@ -213,8 +215,8 @@ def get_temps():
             # args(file_name, data_value )
             try:
                 save_to_client(topic, float(temp))
-            except Exception as exc:
-                publish("debug", exc)
+            except Exception:
+                publish("debug", traceback.print_exc())
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
 
