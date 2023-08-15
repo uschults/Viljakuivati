@@ -206,12 +206,15 @@ def get_temps():
         for topic, sensor in temp_sensors.items():
             temp = read_temp.read_temperature(sensor)
             #print(f"{sensor} : {temperature_topics[id]} :  {temp}")
+
             publish( topic, temp) 
 
             # save data ( should save to cloud )
             # args(file_name, data_value )
-            save_to_client(topic, float(temp))
-
+            try:
+                save_to_client(topic, float(temp))
+            except Exception as exc:
+                publish("debug", exc)
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
 
