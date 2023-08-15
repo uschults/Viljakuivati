@@ -110,16 +110,13 @@ def temperature_sensor_init():
     device_folders = glob.glob(base_dir + '28*')
     #print(device_folders)
 
-    temporary_temps = {}
-    for key, value in config['TEMP_SENSORS'].items():
-        temporary_temps[key] = value
-
+    found_temps = {}
     for folder in device_folders:
-        temp_sensors[folder+ '/w1_slave'] = 1
- 
-
-
-
+        found_temps[folder+ '/w1_slave'] = 1
+    
+    
+    for key, value in config['TEMP_SENSORS'].items():
+        temp_sensors[key] = value
 
 
 # ------------------------------------------------------------- #
@@ -206,16 +203,14 @@ def publish(topic, msg):
 
 def get_temps():
     while temp_sensors:
-        id = 0
-        for sensor in temp_sensors.keys():
+        for topic, sensor in temp_sensors.items():
             temp = read_temp.read_temperature(sensor)
             #print(f"{sensor} : {temperature_topics[id]} :  {temp}")
-            publish( temperature_topics[id], temp) 
+            publish( topic, temp) 
 
             # save data ( should save to cloud )
             # args(file_name, data_value )
             #save_to_client(sensor, temp)
-            id+=1
 
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
