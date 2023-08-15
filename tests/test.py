@@ -1,3 +1,4 @@
+import datetime
 found = {"/sys/bus/w1/devices/28-3ce104579b67/w1_slave":1,"/sys/bus/w1/devices/28-062018797bc2/w1_slave":1}
 temporary = {"temp1" : "/sys/bus/w1/devices/28-3ce104579b67/w1_slave", "temp2" : "28-062018797bc2"}
 
@@ -13,5 +14,7 @@ print("home/pi/" + file_name + ".csv")
 
 a ="15.22"
 b = float(a)
-c = [b]
-print(a, b, c)
+time = datetime.datetime.now()
+c = [time ,b]
+print(time)
+print(c)

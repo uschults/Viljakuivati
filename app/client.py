@@ -211,12 +211,11 @@ def get_temps():
 
             publish( topic, temp) 
 
-            # save data ( should save to cloud )
-            # args(file_name, data_value )
-            try:
-                save_to_client(topic, [float(temp)])
-            except Exception as error:
-                publish("debug", str(error))
+
+            #try:
+            #    save_to_client(topic, [float(temp)])
+            #except Exception as error:
+            #    publish("debug", str(error))
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
 
