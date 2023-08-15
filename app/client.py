@@ -210,7 +210,7 @@ def get_temps():
 
             # save data ( should save to cloud )
             # args(file_name, data_value )
-            #save_to_client(sensor, temp)
+            save_to_client(topic, float(temp))
 
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
