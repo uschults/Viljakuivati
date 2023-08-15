@@ -216,7 +216,7 @@ def get_temps():
             try:
                 save_to_client(topic, float(temp))
             except Exception as error:
-                publish("debug", error)
+                publish("debug", str(error))
     # mayube try-except or smth needed
     publish("teade","Ei ole temperatuuriandureid")
 
