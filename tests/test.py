@@ -7,4 +7,5 @@ if("/sys/bus/w1/devices/28-3ce104579b67/w1_slave" in temporary.values()):
 else:
     print("no")
 
-print("temp1")
+file_name = "test"
+print("home/pi/" + file_name + ".csv")
