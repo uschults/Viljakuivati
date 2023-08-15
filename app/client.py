@@ -38,7 +38,7 @@ broker = '80.250.119.25'
 port = 1883
 
 # Topics in server
-temperature_topics = ["temp1", "temp2", "temp3"]
+temperature_topics = ["temp1", "temp2", "temp3", "temp4", "temp5", "temp6"]
 
 # dictionary holds motor state
 # motor_topics = { motor1: [pin1, pin2]}
