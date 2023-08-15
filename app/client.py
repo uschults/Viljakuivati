@@ -112,6 +112,7 @@ def temperature_sensor_init():
 
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
+        publish("debug", folder )
 
 # ------------------------------------------------------------- #
 # callbacks
