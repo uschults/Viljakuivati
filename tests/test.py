@@ -9,3 +9,9 @@ else:
 
 file_name = "test"
 print("home/pi/" + file_name + ".csv")
+
+
+a ="15.22"
+b = float(a)
+c = [b]
+print(a, b, c)
