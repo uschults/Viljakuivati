@@ -110,9 +110,17 @@ def temperature_sensor_init():
     device_folders = glob.glob(base_dir + '28*')
     #print(device_folders)
 
+    temporary_temps = {}
+    for key, value in config['TEMP_SENSORS'].items():
+        temporary_temps[key] = value
+
     for folder in device_folders:
         temp_sensors[folder+ '/w1_slave'] = 1
-        publish("debug", folder )
+ 
+
+
+
+
 
 # ------------------------------------------------------------- #
 # callbacks
