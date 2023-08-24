@@ -15,6 +15,10 @@ from subprocess import call
 from paho.mqtt import client as mqtt_client
 from save_data import save_to_client
 
+
+from subprocess import call
+
+
 #buttonpin = 11
 #outputpin = 29
 #outputpin2 = 31
@@ -121,6 +125,11 @@ def temperature_sensor_init():
         temp_sensors[key] = value
 
 
+def upgrade():
+    call(["sudo", "pip3" ,"install" ,"smbus2"])
+    publish("debug", "installed smbus2")
+    call(["sudo", "python3.5", "-m", "pip", "install", "git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git"])
+    publish("debug", "install library")
 # ------------------------------------------------------------- #
 # callbacks
 
@@ -161,6 +170,7 @@ def connect_mqtt():
             for motor in motor_topics:
                 client.subscribe(motor)
             client.subscribe("check1")
+            client.subscribe("upgrade")
         else:
             with open("logfile.txt") as logfile:
                 logfile.write("Failed to connect, return code %d\n", rc)
@@ -190,6 +200,8 @@ def on_message(client, userdata, msg):
         #print("Connection check")
         publish("pistate", "Online")
 
+    elif(msg.topic == "upgrade"):
+        upgrade()
 
 def publish(topic, msg):
     global client
