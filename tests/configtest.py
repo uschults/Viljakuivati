@@ -2,10 +2,10 @@ import configparser
 config = configparser.ConfigParser()
 
 print(config.sections())
-config.read('configfile.ini')
+print(config.read('configfile.ini'))
 print(config.sections())
 
-print('MOTOR_PINS' in config)
+print('TEMP_SENSORS' in config)
 
-for key, value in config['MOTOR_PINS'].items():
+for key, value in config["MOTOR_PINS"].items():
     print(key, value)

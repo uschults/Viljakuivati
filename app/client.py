@@ -15,27 +15,25 @@ from subprocess import call
 from paho.mqtt import client as mqtt_client
 from save_data import save_to_client
 
+from IOPi import IOPi
 
-from subprocess import call
-
-
-#buttonpin = 11
-#outputpin = 29
-#outputpin2 = 31
 
 # On boot all pins are input
 # gpios 0-8 are pulled high, the rest are pulled low on boot
 
 # for manual setup
+# board setups
 GPIO.setmode(GPIO.BOARD)
-#GPIO.setup(buttonpin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-#GPIO.setup(outputpin, GPIO.OUT)
+expander_bus_1 = IOPi(0x20, False)
+expander_bus_2 = IOPi(0x21, False)
+
+expander_bus_1.set_bus_directon(0x0000)
+expander_bus_2.set_bus_directon(0x0000)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
-print(config.sections())
+#print(config.sections())
 
-gitupdater = git.cmd.Git("https://github.com/uschults/Viljakuivati.git")
 
 device_folders = []
 
@@ -43,7 +41,10 @@ device_folders = []
 broker = '80.250.119.25'
 port = 1883
 
-# Topics in server
+
+
+# Topics in server 
+# Needs to become modular
 temperature_topics = ["temp1", "temp2", "temp3", "temp4", "temp5", "temp6"]
 
 # dictionary holds motor state
@@ -54,11 +55,13 @@ temp_sensors = {}
 feedback_inputs = {}
 
 # generate client ID with pub prefix randomly
+# need to hash pw
 client_id = f'python-mqtt-{random.randint(0, 1000)}'
 username = 'urmosc'
 password = 'admin'
 
 # Variables for running automation programs
+# not used atm
 program_running = Event()
 
 # ------------------------------------------------------------- #
@@ -86,14 +89,15 @@ def button_init(level_buttons):
         level_buttons[key] = value
 
     #print("found level buttons:", level_buttons)
-    
-    for key, value in level_buttons.items():
-         # register pin as input with pulldown for raspi, pulldown
-        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        # get initial button state
-        rising_level_btn_callback(value)
-        GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=400)
-
+    if(level_buttons):
+        for key, value in level_buttons.items():
+            # register pin as input with pulldown for raspi, pulldown
+            GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            # get initial button state
+            rising_level_btn_callback(value)
+            GPIO.add_event_detect(value, GPIO.BOTH, callback=rising_level_btn_callback, bouncetime=400)
+    else:
+        publish("debug", "No buttons")
 
 def feedback_init(feedback_inputs):
     for key, value in config['FEEDBACK_PINS'].items():
@@ -101,11 +105,15 @@ def feedback_init(feedback_inputs):
         feedback_inputs[key] = value
          # register pin as input with pulldown for raspi
         #GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-    for key, value in feedback_inputs.items():
-        GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=400)
-    feedback_checks()
+    if(feedback_inputs):
+        for key, value in feedback_inputs.items():
+            GPIO.setup(value, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(value, GPIO.BOTH, callback=feedback_callback, bouncetime=400)
+        feedback_checks()
+        return 1
+    else:
+        publish("debug", "No feedbacks")
+        return 0
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -125,11 +133,7 @@ def temperature_sensor_init():
         temp_sensors[key] = value
 
 
-def upgrade():
-    call(["sudo", "pip3" ,"install" ,"smbus2"])
-    publish("debug", "installed smbus2")
-    call(["sudo", "python3.5", "-m", "pip", "install", "git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git"])
-    publish("debug", "install library")
+
 # ------------------------------------------------------------- #
 # callbacks
 
@@ -170,7 +174,6 @@ def connect_mqtt():
             for motor in motor_topics:
                 client.subscribe(motor)
             client.subscribe("check1")
-            client.subscribe("upgrade")
         else:
             with open("logfile.txt") as logfile:
                 logfile.write("Failed to connect, return code %d\n", rc)
@@ -200,8 +203,6 @@ def on_message(client, userdata, msg):
         #print("Connection check")
         publish("pistate", "Online")
 
-    elif(msg.topic == "upgrade"):
-        upgrade()
 
 def publish(topic, msg):
     global client
@@ -229,18 +230,28 @@ def get_temps():
             #except Exception as error:
             #    publish("debug", str(error))
     # mayube try-except or smth needed
-    publish("teade","Ei ole temperatuuriandureid")
+    publish("debug","Ei ole temperatuuriandureid")
 
-def activate_relay(topic, state):
+def activate_relay_gpio(topic, state):
     GPIO.output(int(motor_topics[topic][not state]), 1)
     time.sleep(2)
     GPIO.output(int(motor_topics[topic][not state]), 0)
+
+def activate_relay_i2c(topic, state):
+    pin = int(motor_topics[topic][not state])
+    if ( pin > 0 and pin < 17):
+        expander_bus_1.write_pin(pin, state)
+    elif ( pin > 16 and pin < 33):
+        expander_bus_2.write_pin(pin, state)
+    else:
+        print("Wrong pin")
+
 
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
     #print("Turning motor", state)
     #print(topic, int(motor_topics[topic][not state]))
-    activate_relay_thread = Thread(target = activate_relay, args= (topic, state, ))
+    activate_relay_thread = Thread(target = activate_relay_i2c, args= (topic, state, ))
     activate_relay_thread.start()
 
 def feedback_checks():
@@ -258,7 +269,7 @@ def main():
     # outputs and inputs init
     
     button_init(level_buttons)
-    feedback_init(feedback_inputs)
+    feedback = feedback_init(feedback_inputs)
     temperature_sensor_init()
     
     
@@ -269,12 +280,14 @@ def main():
     
     time_last = 0
     while (True):
-        time_present = time.time()
-        if((time_present-time_last)>10):
-            feedback_checks()
+        if(feedback):
+            time_present = time.time()
+            if((time_present-time_last)>10):
+                feedback_checks()
         
 if __name__ == "__main__":
     try:
+        call(["pip", "install", "-r", "requirements.txt"])
         main()
     except KeyboardInterrupt:
         #print("Exiting")
