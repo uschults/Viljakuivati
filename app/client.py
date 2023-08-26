@@ -37,6 +37,7 @@ def expander_init():
     expander_bus_1.set_bus_direction(0x0000)
     expander_bus_2.set_bus_direction(0x0000)
 
+    expander_bus_1.write_pin(1,1)
 config = configparser.ConfigParser()
 config.read('configfile.ini')
 #print(config.sections())
