@@ -25,14 +25,14 @@ from save_data import save_to_client
 # for manual setup
 # board setups
 GPIO.setmode(GPIO.BOARD)
-
+global IOPi1
 global expander_bus_1, expander_bus_2
 
 def expander_init():
     global expander_bus_1, expander_bus_2
 
-    expander_bus_1 = IOPi(0x20)
-    expander_bus_2 = IOPi(0x21)
+    expander_bus_1 = IOPi1(0x20)
+    expander_bus_2 = IOPi1(0x21)
 
     expander_bus_1.set_bus_directon(0x0000)
     expander_bus_2.set_bus_directon(0x0000)
@@ -272,7 +272,7 @@ def feedback_checks():
 
 
 def main():
-    global client
+    global client, IOPi1
     # motor_init before mqtt or iter error
     
     client = mqtt_init()
@@ -286,7 +286,7 @@ def main():
 
     try:
         try:
-            from IOPi import IOPi
+            from IOPi import IOPi as IOPi1
         except ImportError as e:
             publish("debug", str(e))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
@@ -294,7 +294,7 @@ def main():
         publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
         
         expander_init()
-        
+
     except:
         publish("debug", "error in expander_init")
 
