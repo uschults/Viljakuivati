@@ -37,7 +37,7 @@ def expander_init():
         expander_bus_1.set_bus_directon(0x0000)
         expander_bus_2.set_bus_directon(0x0000)
     except Exception as e:
-        publish("debug", str(e))
+        publish("debug", str(e.message))
 config = configparser.ConfigParser()
 config.read('configfile.ini')
 #print(config.sections())
