@@ -25,7 +25,12 @@ from IOPi import IOPi
 # board setups
 GPIO.setmode(GPIO.BOARD)
 
+expander_bus_1 = None
+expander_bus_2 = None
+
 def expander_init():
+    global expander_bus_1, expander_bus_2
+    
     expander_bus_1 = IOPi(0x20, False)
     expander_bus_2 = IOPi(0x21, False)
 
