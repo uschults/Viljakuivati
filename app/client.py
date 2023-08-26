@@ -28,14 +28,16 @@ GPIO.setmode(GPIO.BOARD)
 global expander_bus_1, expander_bus_2
 
 def expander_init():
-    global expander_bus_1, expander_bus_2
+    try:
+        global expander_bus_1, expander_bus_2
 
-    expander_bus_1 = IOPi(0x20)
-    expander_bus_2 = IOPi(0x21)
+        expander_bus_1 = IOPi(0x20)
+        expander_bus_2 = IOPi(0x21)
 
-    expander_bus_1.set_bus_directon(0x0000)
-    expander_bus_2.set_bus_directon(0x0000)
-
+        expander_bus_1.set_bus_directon(0x0000)
+        expander_bus_2.set_bus_directon(0x0000)
+    except Exception as e:
+        publish("debug", str(e))
 config = configparser.ConfigParser()
 config.read('configfile.ini')
 #print(config.sections())
@@ -286,10 +288,8 @@ def main():
 
     try:
         expander_init()
-    except Exception as e:
+    except:
         publish("debug", "error in expander_init")
-        publish("debug", str(e))
-        publish("email", str(e))
 
     try:
         button_init(level_buttons)
