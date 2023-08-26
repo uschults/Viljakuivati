@@ -287,18 +287,17 @@ def main():
 
     try:
         try:
-            call(["sudo"," python3.5"," -m","pip"," install"," git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git"])
+            call(["sudo"," python3"," -m","pip"," install"," git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git"])
         except:
             publish("debug", "install")
 
         try:
-            from IOPI import IOPI
+            from ABElectronics_IOPi  import IOPI
         except ImportError as e:
             publish("debug", str(e))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
         publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
-        publish("debug", check_output(["sudo", "pip", "freeze"]))
         
         expander_init()
     except:
