@@ -29,7 +29,6 @@ GPIO.setmode(GPIO.BOARD)
 global expander_bus_1, expander_bus_2
 
 def expander_init():
-
     global expander_bus_1, expander_bus_2
 
     expander_bus_1 = IOPi(0x20)
@@ -287,12 +286,7 @@ def main():
 
     try:
         try:
-            call(["sudo"," python3"," -m","pip"," install"," git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git"])
-        except:
-            publish("debug", "install")
-
-        try:
-            import IOPi
+            from IOPi import IOPi
         except ImportError as e:
             publish("debug", str(e))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
