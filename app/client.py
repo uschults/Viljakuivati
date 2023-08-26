@@ -30,8 +30,8 @@ global expander_bus_1, expander_bus_2
 def expander_init():
     global expander_bus_1, expander_bus_2
 
-    expander_bus_1 = IOPi(0x20, False)
-    expander_bus_2 = IOPi(0x21, False)
+    expander_bus_1 = IOPi(0x20)
+    expander_bus_2 = IOPi(0x21)
 
     expander_bus_1.set_bus_directon(0x0000)
     expander_bus_2.set_bus_directon(0x0000)
@@ -282,18 +282,18 @@ def main():
         motor_init(motor_topics)
         publish("debug", "motors read")
     except:
-        publish("debug", "erron in motor_init")
+        publish("debug", "error in motor_init")
 
     try:
         expander_init()
     except:
         publish("debug", "error in expander_init")
+
     try:
         button_init(level_buttons)
         publish("debug", "buttons read")
     except Exception as e:
         publish("debug", "error in button_init")
-        publish("debug", str(e))
 
     feedback = feedback_init(feedback_inputs)
     publish("debug", "feedbacks read")
