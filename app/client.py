@@ -298,6 +298,7 @@ def main():
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
         publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
+        publish("debug", check_output(["sudo", "pip", "freeze"]))
         
         expander_init()
     except:
