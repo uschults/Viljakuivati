@@ -24,11 +24,13 @@ from IOPi import IOPi
 # for manual setup
 # board setups
 GPIO.setmode(GPIO.BOARD)
-#expander_bus_1 = IOPi(0x20, False)
-#expander_bus_2 = IOPi(0x21, False)
 
-#expander_bus_1.set_bus_directon(0x0000)
-#expander_bus_2.set_bus_directon(0x0000)
+def expander_init():
+    expander_bus_1 = IOPi(0x20, False)
+    expander_bus_2 = IOPi(0x21, False)
+
+    expander_bus_1.set_bus_directon(0x0000)
+    expander_bus_2.set_bus_directon(0x0000)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -278,6 +280,10 @@ def main():
     except:
         publish("debug", "erron in motor_init")
 
+    try:
+        expander_init()
+    except:
+        publish("debug", "error in expander_init")
     try:
         button_init(level_buttons)
         publish("debug", "buttons read")
