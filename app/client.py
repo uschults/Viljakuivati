@@ -265,10 +265,12 @@ def feedback_checks():
 def main():
     global client
     # motor_init before mqtt or iter error
-    motor_init(motor_topics)
-    client = mqtt_init()
-    # outputs and inputs init
     
+    client = mqtt_init()
+    publish("debug", "Connection made")
+    # outputs and inputs init
+    motor_init(motor_topics)
+
     button_init(level_buttons)
     feedback = feedback_init(feedback_inputs)
     temperature_sensor_init()
