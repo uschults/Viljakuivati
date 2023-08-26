@@ -25,17 +25,17 @@ from IOPi import IOPi
 # board setups
 GPIO.setmode(GPIO.BOARD)
 
-global expander_bus_1, expander_bus_2
+#global expander_bus_1, expander_bus_2
 
-def expander_init():
+#def expander_init():
 
-    global expander_bus_1, expander_bus_2
+#    global expander_bus_1, expander_bus_2
 
-    expander_bus_1 = IOPi(0x20)
-    expander_bus_2 = IOPi(0x21)
+expander_bus_1 = IOPi(0x20)
+expander_bus_2 = IOPi(0x21)
 
-    expander_bus_1.set_bus_directon(0x0000)
-    expander_bus_2.set_bus_directon(0x0000)
+expander_bus_1.set_bus_directon(0x0000)
+expander_bus_2.set_bus_directon(0x0000)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -248,14 +248,13 @@ def activate_relay_gpio(topic, state):
     GPIO.output(int(motor_topics[topic][not state]), 0)
 
 def activate_relay_i2c(topic, state):
-    pass
-#    pin = int(motor_topics[topic][not state])
-#    if ( pin > 0 and pin < 17):
-#        expander_bus_1.write_pin(pin, state)
-#    elif ( pin > 16 and pin < 33):
-#        expander_bus_2.write_pin(pin, state)
-#    else:
-#        print("Wrong pin")
+    pin = int(motor_topics[topic][not state])
+    if ( pin > 0 and pin < 17):
+        expander_bus_1.write_pin(pin, state)
+    elif ( pin > 16 and pin < 33):
+        expander_bus_2.write_pin(pin, state)
+    else:
+        publish("debug", "wrong pin")
 
 
 def motor_control(topic, state):
@@ -285,10 +284,10 @@ def main():
     except:
         publish("debug", "error in motor_init")
 
-    try:
-        expander_init()
-    except:
-        publish("debug", "error in expander_init")
+    #try:
+    #    expander_init()
+    #except:
+    #    publish("debug", "error in expander_init")
 
     try:
         button_init(level_buttons)
