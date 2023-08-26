@@ -28,17 +28,15 @@ GPIO.setmode(GPIO.BOARD)
 global expander_bus_1, expander_bus_2
 
 def expander_init():
-    try:
-        global expander_bus_1, expander_bus_2
 
-        expander_bus_1 = IOPi(0x20)
-        expander_bus_2 = IOPi(0x21)
+    global expander_bus_1, expander_bus_2
 
-        expander_bus_1.set_bus_directon(0x0000)
-        expander_bus_2.set_bus_directon(0x0000)
-    except Exception as e:
-        publish("debug", str(e))
-        publish("debug", "".join(traceback.format_exception_only(type(e), e)).strip())
+    expander_bus_1 = IOPi(0x20)
+    expander_bus_2 = IOPi(0x21)
+
+    expander_bus_1.set_bus_directon(0x0000)
+    expander_bus_2.set_bus_directon(0x0000)
+
 config = configparser.ConfigParser()
 config.read('configfile.ini')
 #print(config.sections())
@@ -320,10 +318,10 @@ def main():
                 feedback_checks()
         
 if __name__ == "__main__":
-    #try:
-    #    call(["pip", "install", "-r", "requirements.txt"]) 
-    #except:
-    #    print("error installing modules")
+    try:
+        call(["pip", "install", "-r", "requirements.txt"])
+    except:
+        print("error installing modules")
     try:   
         main()
     except KeyboardInterrupt:
