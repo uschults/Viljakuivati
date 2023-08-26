@@ -292,7 +292,7 @@ def main():
             publish("debug", "install")
 
         try:
-            from ABElectronics_IOPi  import IOPI
+            from IOPi  import IOPI
         except ImportError as e:
             publish("debug", str(e))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
