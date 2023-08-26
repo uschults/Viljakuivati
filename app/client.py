@@ -37,7 +37,6 @@ def expander_init():
     expander_bus_1.set_bus_direction(0x0000)
     expander_bus_2.set_bus_direction(0x0000)
 
-    expander_bus_1.write_pin(1,1)
 config = configparser.ConfigParser()
 config.read('configfile.ini')
 #print(config.sections())
@@ -252,11 +251,15 @@ def activate_relay_i2c(topic, state):
     pin = int(motor_topics[topic][not state])
     if ( pin > 0 and pin < 17):
         expander_bus_1.write_pin(pin, state)
+        time.sleep(2)
+        expander_bus_1.write_pin(pin, not state)
     elif ( pin > 16 and pin < 33):
         expander_bus_2.write_pin(pin, state)
+        time.sleep(2)
+        expander_bus_2.write_pin(pin, not state)
     else:
         publish("debug", "wrong pin")
-
+    publish("debug", "i2crelay")
 
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
