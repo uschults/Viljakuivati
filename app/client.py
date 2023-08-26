@@ -286,13 +286,15 @@ def main():
 
     try:
         expander_init()
-    except:
+    except Exception as e:
         publish("debug", "error in expander_init")
+        publish("debug", str(e))
+        publish("email", str(e))
 
     try:
         button_init(level_buttons)
         publish("debug", "buttons read")
-    except Exception as e:
+    except: 
         publish("debug", "error in button_init")
 
     feedback = feedback_init(feedback_inputs)
