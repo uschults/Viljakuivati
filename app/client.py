@@ -306,10 +306,10 @@ def main():
                 feedback_checks()
         
 if __name__ == "__main__":
-    #try:
-    #    call(["pip", "install", "-r", "requirements.txt"])
-    #except:
-    #    print("error installing modules")
+    try:
+        call(["pip", "install", "-r", "requirements.txt"])
+    except:
+        print("error installing modules")
     try:   
         main()
     except KeyboardInterrupt:
