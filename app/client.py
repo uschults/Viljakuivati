@@ -171,8 +171,9 @@ def connect_mqtt():
             # reconnect then subscriptions will be renewed.
             # maybe read directly from config??
             #publish("teade", motor_topics)
-            for motor in motor_topics:
-                client.subscribe(motor)
+            if(motor_topics):
+                for motor in motor_topics:
+                    client.subscribe(motor)
             client.subscribe("check1")
             publish("debug", "subscribes done")
         else:
@@ -270,9 +271,12 @@ def main():
     client = mqtt_init()
     publish("debug", "Connection made")
     # outputs and inputs init
-    motor_init(motor_topics)
-    publish("debug", "motors read")
-
+    try:
+        motor_init(motor_topics)
+        publish("debug", "motors read")
+    except:
+        publish("debug", "erron in motor_init")
+        
     button_init(level_buttons)
     publish("debug", "buttons read")
 
