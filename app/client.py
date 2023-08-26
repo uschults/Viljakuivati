@@ -270,10 +270,16 @@ def main():
     publish("debug", "Connection made")
     # outputs and inputs init
     motor_init(motor_topics)
+    publish("debug", "motors read")
 
     button_init(level_buttons)
+    publish("debug", "buttons read")
+
     feedback = feedback_init(feedback_inputs)
+    publish("debug", "feedbacks read")
+    
     temperature_sensor_init()
+    publish("debug", "temps read")
     
     
     # Separate thread for reading different temp sensors values
