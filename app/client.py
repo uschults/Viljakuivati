@@ -34,8 +34,8 @@ def expander_init():
     expander_bus_1 = IOPi1(0x20)
     expander_bus_2 = IOPi1(0x21)
 
-    expander_bus_1.set_bus_directon(0x0000)
-    expander_bus_2.set_bus_directon(0x0000)
+    #expander_bus_1.set_bus_directon(0x0000)
+    #expander_bus_2.set_bus_directon(0x0000)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -289,9 +289,9 @@ def main():
             from IOPi import IOPi as IOPi1
         except ImportError as e:
             publish("debug", str(e))
-        publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
-        publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
-        publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
+        #publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
+        #publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
+       # publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
         
         expander_init()
 
