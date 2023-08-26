@@ -10,12 +10,13 @@ import RPi.GPIO as GPIO
 
 import traceback
 
+
 from threading import Thread, Event
 from subprocess import call, check_output
 from paho.mqtt import client as mqtt_client
 from save_data import save_to_client
 
-from IOPi import IOPi
+#from IOPi import IOPi
 
 
 # On boot all pins are input
@@ -31,8 +32,8 @@ def expander_init():
 
     global expander_bus_1, expander_bus_2
 
-    expander_bus_1 = IOPi(0x20, False)
-    expander_bus_2 = IOPi(0x21, False)
+    expander_bus_1 = IOPi(0x20)
+    expander_bus_2 = IOPi(0x21)
 
     expander_bus_1.set_bus_directon(0x0000)
     expander_bus_2.set_bus_directon(0x0000)
@@ -285,6 +286,10 @@ def main():
         publish("debug", "error in motor_init")
 
     try:
+        try:
+            from IOPI import IOPI
+        except ImportError as e:
+            publish("debug", str(e))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
         publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
