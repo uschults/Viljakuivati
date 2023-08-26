@@ -34,8 +34,8 @@ def expander_init():
     expander_bus_1 = IOPi1(0x20)
     expander_bus_2 = IOPi1(0x21)
 
-    #expander_bus_1.set_bus_directon(0x0000)
-    #expander_bus_2.set_bus_directon(0x0000)
+    expander_bus_1.set_bus_direction(0x0000)
+    expander_bus_2.set_bus_direction(0x0000)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
