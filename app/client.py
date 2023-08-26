@@ -287,6 +287,11 @@ def main():
 
     try:
         try:
+            call(["sudo"," python3.5"," -m","pip"," install"," git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git"])
+        except:
+            publish("debug", "install")
+
+        try:
             from IOPI import IOPI
         except ImportError as e:
             publish("debug", str(e))
