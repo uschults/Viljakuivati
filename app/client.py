@@ -291,8 +291,9 @@ def main():
     try:
         button_init(level_buttons)
         publish("debug", "buttons read")
-    except:
+    except Exception as e:
         publish("debug", "error in button_init")
+        publish("debug", str(e))
 
     feedback = feedback_init(feedback_inputs)
     publish("debug", "feedbacks read")
