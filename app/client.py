@@ -250,13 +250,13 @@ def activate_relay_gpio(topic, state):
 def activate_relay_i2c(topic, state):
     pin = int(motor_topics[topic][not state])
     if ( pin > 0 and pin < 17):
-        expander_bus_1.write_pin(pin, state)
+        expander_bus_1.write_pin(pin, 1)
         time.sleep(2)
-        expander_bus_1.write_pin(pin, not state)
+        expander_bus_1.write_pin(pin, 0)
     elif ( pin > 16 and pin < 33):
-        expander_bus_2.write_pin(pin, state)
+        expander_bus_2.write_pin(pin, 1)
         time.sleep(2)
-        expander_bus_2.write_pin(pin, not state)
+        expander_bus_2.write_pin(pin, 0)
     else:
         publish("debug", "wrong pin")
     publish("debug", "i2crelay")
