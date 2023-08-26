@@ -77,9 +77,9 @@ def motor_init(motor_topics):
     for key, value in config['MOTOR_PINS'].items():
         values_in_list = value.split(",")
         motor_topics[key] = values_in_list  # turn to int 
-        for pin in values_in_list:
+        #for pin in values_in_list:
             #print(pin)
-            GPIO.setup(int(pin), GPIO.OUT) # what if it cant be cast to int
+            #GPIO.setup(int(pin), GPIO.OUT) # what if it cant be cast to int
     #print("found motors:", motor_topics)
 
 def button_init(level_buttons):
