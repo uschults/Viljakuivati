@@ -15,7 +15,7 @@ from subprocess import call
 from paho.mqtt import client as mqtt_client
 from save_data import save_to_client
 
-#from IOPi import IOPi
+from IOPi import IOPi
 
 
 # On boot all pins are input
@@ -306,10 +306,10 @@ def main():
                 feedback_checks()
         
 if __name__ == "__main__":
-    try:
-        call(["pip", "install", "-r", "requirements.txt"])
-    except:
-        print("error installing modules")
+    #try:
+    #    call(["pip", "install", "-r", "requirements.txt"]) 
+    #except:
+    #    print("error installing modules")
     try:   
         main()
     except KeyboardInterrupt:
