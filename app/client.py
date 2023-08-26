@@ -276,16 +276,21 @@ def main():
         publish("debug", "motors read")
     except:
         publish("debug", "erron in motor_init")
-        
-    button_init(level_buttons)
-    publish("debug", "buttons read")
+
+    try:
+        button_init(level_buttons)
+        publish("debug", "buttons read")
+    except:
+        publish("debug", "error in button_init")
 
     feedback = feedback_init(feedback_inputs)
     publish("debug", "feedbacks read")
     
-    temperature_sensor_init()
-    publish("debug", "temps read")
-    
+    try:
+        temperature_sensor_init()
+        publish("debug", "temps read")
+    except:
+        publish("debug", "error in temp_init")
     
     # Separate thread for reading different temp sensors values
     temp_thread = Thread(target = get_temps)
