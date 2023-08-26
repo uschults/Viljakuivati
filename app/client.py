@@ -294,6 +294,7 @@ def main():
         publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
         
         expander_init()
+        
     except:
         publish("debug", "error in expander_init")
 
