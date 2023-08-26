@@ -285,7 +285,7 @@ def main():
         publish("debug", "error in motor_init")
 
     try:
-        publish("debug", check_output(["    sudo", "raspi-config", "nonint", "get_i2c"]))
+        publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
         expander_init()
     except:
         publish("debug", "error in expander_init")
