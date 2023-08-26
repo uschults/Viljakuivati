@@ -31,8 +31,8 @@ def expander_init():
 
     global expander_bus_1, expander_bus_2
 
-    expander_bus_1 = IOPi(0x20)
-    expander_bus_2 = IOPi(0x21)
+    expander_bus_1 = IOPi(0x20, False)
+    expander_bus_2 = IOPi(0x21, False)
 
     expander_bus_1.set_bus_directon(0x0000)
     expander_bus_2.set_bus_directon(0x0000)
@@ -285,10 +285,10 @@ def main():
         publish("debug", "error in motor_init")
 
     try:
-
-        
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "do_i2c", "0"]))
         publish("debug", check_output(["sudo", "raspi-config", "nonint", "get_i2c"]))
+        publish("debug", check_output(["sudo", "i2cdetect", "-y", "1"]))
+        
         expander_init()
     except:
         publish("debug", "error in expander_init")
