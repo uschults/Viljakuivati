@@ -15,7 +15,7 @@ from subprocess import call
 from paho.mqtt import client as mqtt_client
 from save_data import save_to_client
 
-from IOPi import IOPi
+#from IOPi import IOPi
 
 
 # On boot all pins are input
@@ -24,11 +24,11 @@ from IOPi import IOPi
 # for manual setup
 # board setups
 GPIO.setmode(GPIO.BOARD)
-expander_bus_1 = IOPi(0x20, False)
-expander_bus_2 = IOPi(0x21, False)
+#expander_bus_1 = IOPi(0x20, False)
+#expander_bus_2 = IOPi(0x21, False)
 
-expander_bus_1.set_bus_directon(0x0000)
-expander_bus_2.set_bus_directon(0x0000)
+#expander_bus_1.set_bus_directon(0x0000)
+#expander_bus_2.set_bus_directon(0x0000)
 
 config = configparser.ConfigParser()
 config.read('configfile.ini')
@@ -238,13 +238,14 @@ def activate_relay_gpio(topic, state):
     GPIO.output(int(motor_topics[topic][not state]), 0)
 
 def activate_relay_i2c(topic, state):
-    pin = int(motor_topics[topic][not state])
-    if ( pin > 0 and pin < 17):
-        expander_bus_1.write_pin(pin, state)
-    elif ( pin > 16 and pin < 33):
-        expander_bus_2.write_pin(pin, state)
-    else:
-        print("Wrong pin")
+    pass
+#    pin = int(motor_topics[topic][not state])
+#    if ( pin > 0 and pin < 17):
+#        expander_bus_1.write_pin(pin, state)
+#    elif ( pin > 16 and pin < 33):
+#        expander_bus_2.write_pin(pin, state)
+#    else:
+#        print("Wrong pin")
 
 
 def motor_control(topic, state):
