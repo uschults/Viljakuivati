@@ -259,7 +259,7 @@ def activate_relay_i2c(topic, state):
         expander_bus_2.write_pin(pin, 0)
     else:
         publish("debug", "wrong pin")
-    publish("debug", "i2crelay")
+    publish("debug", pin)
 
 def motor_control(topic, state):
     # toggle relay, if state = true = turn motor on
