@@ -329,6 +329,8 @@ def main():
             time_present = time.time()
             if((time_present-time_last)>10):
                 feedback_checks()
+                publish("debug", "feedback_check")
+                time_last=time_present
         
 if __name__ == "__main__":
     #try:

@@ -1,4 +1,4 @@
-import datetime
+""" import datetime
 found = {"/sys/bus/w1/devices/28-3ce104579b67/w1_slave":1,"/sys/bus/w1/devices/28-062018797bc2/w1_slave":1}
 temporary = {"temp1" : "/sys/bus/w1/devices/28-3ce104579b67/w1_slave", "temp2" : "28-062018797bc2"}
 
@@ -17,4 +17,16 @@ b = float(a)
 time = datetime.datetime.now()
 c = [time ,b]
 print(time)
-print(c)
+print(c) """
+
+import time
+
+time_last = time.time()
+
+while(True):
+    print("wassa")
+    time_now = time.time()
+    if((time_now-time_last)>4):
+        print("YEABOY")
+        time_last=time_now
+    time.sleep(1)
