@@ -1,0 +1,113 @@
+// name: Dashboard Theme : Modern Dark
+<div>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            --background: #212529;
+            --on-background: white;
+            --surface: #2d3136;
+            --on-surface: white;
+            --primary: var(--nr-dashboard-widgetColor);
+            --on-primary: white;
+            --secondary: var(--nr-dashboard-groupTextColor);
+            --accent: red;
+            --radius-s: 8px;
+            --font-weight-m: 300;
+            --font-weight-m: 500;
+            --font-weight-l: 700;
+            --space-s: 8px;
+            --space-m: 16px;
+            --space-l: 32px;
+        }
+
+        body.nr-dashboard-theme {
+            background-color: var(--background);
+            font-family: 'Montserrat', sans-serif;
+        }
+        .nr-dashboard-theme ui-card-panel {
+            background-color: var(--background);
+            border: 0;
+        }
+        .nr-dashboard-theme .nr-dashboard-button .md-button {
+            background-color: var(--primary);
+            border-radius: var(--radius-s);
+            padding: 8px !important;
+            line-height: inherit;
+            font-weight: var(--font-weight-l);
+            color: var(--on-primary);
+        }
+        .nr-dashboard-theme [ui-card-size="2x2"].nr-dashboard-button .md-button {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            white-space: pre-line;
+        }
+        
+        .nr-dashboard-theme .nr-dashboard-button .md-button ui-icon {
+                margin-bottom: 8px;
+        }
+        .nr-dashboard-theme .nr-dashboard-button .md-button:hover {
+            background-color: var(--secondary);
+        }
+        body.nr-dashboard-theme md-content md-card {
+            background-color: var(--surface);
+        }
+        md-card.md-default-theme, md-card {
+            border-radius: var(--radius-s);
+        }
+        .nr-dashboard-theme .nr-dashboard-gauge-titlel {
+            font-weight: var(--font-weight-l) !important;      
+        }
+        .nr-dashboard-theme ui-card-panel p.nr-dashboard-cardtitle {
+            font-weight: var(--font-weight-l);  
+            text-transform: capitalize;
+            color: var(--on-background);
+        }
+        .nr-dashboard-cardpanel > p {
+            margin-left: 0;
+            padding-left: 16px;
+        }
+        body.nr-dashboard-theme md-toolbar {
+            background-color: var(--surface);
+        }
+        .md-default-theme .md-datepicker-calendar, .md-datepicker-calendar,
+        .md-default-theme .md-calendar, .md-calendar{
+            background-color: var(--surface);
+            color: var(--on-surface);
+        }
+        .md-default-theme .md-datepicker-calendar-pane, .md-datepicker-calendar-pane{
+            border: 0;
+        }
+        .md-default-theme .md-calendar-month-label md-icon, .md-calendar-month-label md-icon, .md-default-theme .md-datepicker-input, .md-datepicker-input {
+            color: var(--on-surface);
+        }
+        body.nr-dashboard-theme md-content md-card {
+            color: var(--on-surface);
+        }
+        .nr-dashboard-theme .nr-dashboard-numeric .value {
+            background-color: var(--surface);
+            color: var(--on-surface);
+        }
+        .nr-dashboard-theme .nr-dashboard-dropdown md-select .md-select-value, .nr-dashboard-theme .nr-dashboard-dropdown md-select .md-select-value.md-select-placeholder {
+            color: var(--on-surface);
+            border-color: var(--on-surface);
+        }
+        .nr-dashboard-theme .nr-dashboard-dropdown .md-select-icon {
+            color: var(--on-surface);
+        }
+        .nr-dashboard-theme .nr-dashboard-date-picker md-input-container .md-input {
+            color: var(--on-surface);
+            border-color: var(--on-surface);
+        }
+        .nr-dashboard-theme .nr-dashboard-date-picker .md-datepicker-triangle-button .md-datepicker-expand-triangle {
+            border-top-color: var(--on-surface);
+        }
+        body.nr-dashboard-theme md-sidenav {
+            background-color: var(--surface);
+        }
+        md-list-item._md-button-wrap > div.md-button:first-child, md-list-item .md-list-item-inner {
+            background-color: var(--surface);
+        }
+    </style>
+</div>
