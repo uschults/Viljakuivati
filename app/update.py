@@ -28,7 +28,7 @@ def on_message(client, userdata, msg):
                 call(["sudo", "systemctl", "restart", "kuivati.service"])
                 publish(client, "pistate", "Offline")
             else:
-                publish("")
+                publish(client,"teade", msg)
         except:
             publish(client, "debug", "ERROR: could not update")
 
