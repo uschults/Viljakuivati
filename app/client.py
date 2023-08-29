@@ -228,18 +228,16 @@ def publish(topic, msg):
 
 def get_temps():
     while temp_sensors:
-        for topic, sensor in temp_sensors.items():
-            temp = read_temp.read_temperature(sensor)
-            #print(f"{sensor} : {temperature_topics[id]} :  {temp}")
+        try:
+            for topic, sensor in temp_sensors.items():
+                temp = read_temp.read_temperature(sensor)
+                
+                # Saving to client?
 
-            publish( topic, temp) 
+                publish( topic, temp) 
+        except:
+            publish("debug", "ERROR: reading temp sensors")
 
-
-            #try:
-            #    save_to_client(topic, [float(temp)])
-            #except Exception as error:
-            #    publish("debug", str(error))
-    # mayube try-except or smth needed
     publish("debug","Ei ole temperatuuriandureid")
 
 def activate_relay_gpio(topic, state):
@@ -308,10 +306,13 @@ def main():
         publish("debug", "buttons read")
     except: 
         publish("debug", "error in button_init")
-
-    feedback = feedback_init(feedback_inputs)
-    publish("debug", "feedbacks read")
     
+    try:
+        feedback = feedback_init(feedback_inputs)
+        publish("debug", "feedbacks read")
+    except:
+        publish("debug", "ERROR: feedback init")
+
     try:
         temperature_sensor_init()
         publish("debug", "temps read")
