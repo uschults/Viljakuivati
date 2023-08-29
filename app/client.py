@@ -327,11 +327,14 @@ def main():
     time_last = time.time()
     while (True):
         if(feedback):
-            time_present = time.time()
-            if((time_present-time_last)>30):
-                feedback_checks()
-                publish("debug", "feedback_check")
-                time_last=time_present
+                time_present = time.time()
+                if((time_present-time_last)>30):
+                    try:
+                        feedback_checks()
+                        publish("debug", "feedback_check")
+                        time_last=time_present
+                    except:
+                        publish("debug", "ERROR: unable to check feedbacks")
         
 if __name__ == "__main__":
     #try:
