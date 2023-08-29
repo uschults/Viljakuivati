@@ -23,7 +23,7 @@ def on_message(client, userdata, msg):
             #print(msg)
             # Shouldn't restart if already up to date
             if(not msg == "Already up to date."):
-                #print("restarting") 
+                publish(client, "debug", "Updating...") 
                 publish(client, "teade", "System restarting")
                 call(["sudo", "systemctl", "restart", "kuivati.service"])
                 publish(client, "pistate", "Offline")
@@ -34,6 +34,7 @@ def on_message(client, userdata, msg):
 
     elif(data == "restart"):
         try:
+            publish(client, "debug", "Restarting...") 
             publish(client, "teade", "System restarting")
             call(["sudo", "systemctl", "restart", "kuivati.service"])
             publish(client, "pistate", "Offline")
