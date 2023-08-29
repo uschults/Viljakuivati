@@ -3,3 +3,7 @@
     +   feedbacks
     -   
 -   feedback sends too many reqs
+
+turn LEDS off when offline
+
+logimine paremaks

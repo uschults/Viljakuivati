@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import time
+import datetime
 import read_temp
 import random
 import configparser
@@ -9,7 +10,6 @@ import git
 import RPi.GPIO as GPIO
 
 import traceback
-
 
 from threading import Thread, Event
 from subprocess import call, check_output
