@@ -324,7 +324,7 @@ def main():
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
-    time_last = 0
+    time_last = time.time()
     while (True):
         if(feedback):
             time_present = time.time()
