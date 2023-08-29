@@ -18,22 +18,35 @@ def on_message(client, userdata, msg):
     #print(data)
     if(data == "update"):
         #print("starting update")
-        
-        msg = gitupdater.pull()
-        #print(msg)
-        # Shouldn't restart if already up to date
-        if(not msg == "Already up to date."):
-            #print("restarting") 
+        try:
+            msg = gitupdater.pull()
+            #print(msg)
+            # Shouldn't restart if already up to date
+            if(not msg == "Already up to date."):
+                #print("restarting") 
+                publish(client, "teade", "System restarting")
+                call(["sudo", "systemctl", "restart", "kuivati.service"])
+                publish(client, "pistate", "Offline")
+            else:
+                publish("")
+        except:
+            publish(client, "debug", "ERROR: could not update")
+
+    elif(data == "restart"):
+        try:
             publish(client, "teade", "System restarting")
             call(["sudo", "systemctl", "restart", "kuivati.service"])
             publish(client, "pistate", "Offline")
-        #answer
-    if(data == "restart"):
-        publish(client, "teade", "System restarting")
-        call(["sudo", "systemctl", "restart", "kuivati.service"])
-        publish(client, "pistate", "Offline")
+        except:
+            publish(client, "debug", "ERROR: could not restart")
 
-
+    elif(data == "reboot"):
+        try:
+            publish(client, "teade", "System rebooting")
+            publish(client, "pistate", "Offline")
+            call(["sudo", "reboot"])
+        except:
+            publish(client, "debug", "ERROR: could not reboot")
 
 def publish(client, topic, msg):
     result = client.publish(topic, msg)

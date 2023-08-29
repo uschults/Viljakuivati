@@ -328,7 +328,7 @@ def main():
     while (True):
         if(feedback):
             time_present = time.time()
-            if((time_present-time_last)>10):
+            if((time_present-time_last)>30):
                 feedback_checks()
                 publish("debug", "feedback_check")
                 time_last=time_present
