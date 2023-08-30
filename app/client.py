@@ -252,9 +252,9 @@ def activate_relay_i2c(topic, state):
         time.sleep(2)
         expander_bus_1.write_pin(pin, 0)
     elif ( pin > 16 and pin < 33):
-        expander_bus_2.write_pin(pin, 1)
+        expander_bus_2.write_pin(pin-16, 1)
         time.sleep(2)
-        expander_bus_2.write_pin(pin, 0)
+        expander_bus_2.write_pin(pin-16, 0)
     else:
         publish("debug", "wrong pin")
     publish("debug", pin)
