@@ -260,7 +260,7 @@ def activate_relay_i2c(topic, state):
         expander_bus_1.write_pin(pin, 1)
         time.sleep(2)
         expander_bus_1.write_pin(pin, 0)
-    elif ( pin > 16 and pin < 33):
+    elif ( pin > 16 and pin < 24):
         expander_bus_2.write_pin(pin-16, 1)
         time.sleep(2)
         expander_bus_2.write_pin(pin-16, 0)
@@ -407,20 +407,20 @@ def main():
         publish("debug", "error in temp_init")
 
     try:
-#        try:
-#            import Adafruit_DHT as Adafruit_DHT
-#       except ImportError as i:
-#            publish("debug", str(e))
         try:
-            import pigpio
-            import DHT22
-        except:
-            publish("debug", "ERROR: dht22 import")
+            import Adafruit_DHT as Adafruit_DHT
+        except ImportError as i:
+            publish("debug", str(e))
+        #try:
+        #    import pigpio
+        #    import DHT22
+        #except:
+        #    publish("debug", "ERROR: dht22 import")
 
-        try:
-            publish("debug", check_output(["sudo", "pigpiod"]))
-        except:
-            publish("debug", "ERROR: running pigpio daemon")
+        #try:
+        #    publish("debug", check_output(["sudo", "pigpiod"]))
+        #except:
+        #    publish("debug", "ERROR: running pigpio daemon")
 
         humid_sensor_init()
         publish("debug", "humids read")
@@ -432,7 +432,7 @@ def main():
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
-    humid_thread = Thread(target= get_humid2)
+    humid_thread = Thread(target= get_humid1)
     humid_thread.start()
 
 
