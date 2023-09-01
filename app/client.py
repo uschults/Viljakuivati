@@ -358,7 +358,7 @@ def main():
     #    publish("debug" , "ERROR: installing modules")
 
     try:
-        publish("debug", check_output(["sudo", "apt-get", "install", "python3-pigpio"]))
+        publish("debug", check_output(["sudo", "apt-get", "install", "pigpio"]))
     except:
         publish("debug", "ERROR: installing module")
 
