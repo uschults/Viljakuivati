@@ -335,7 +335,7 @@ def get_humid2():
             for key, value in humid_sensors.items():
                 sensors[id].trigger()
                 time.sleep(0.2)
-                publish("debug", sensors[id].humidity)
+                publish("debug", str(sensors[id].humidity))
                 sensors[id].cancel()
                 id+=1
             next_reading+=INTERVAL
