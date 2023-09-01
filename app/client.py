@@ -307,10 +307,10 @@ def main():
     publish("debug", "Connection made")
     # outputs and inputs init
 
-    try:
-        call(["pip", "install", "-r", "requirements.txt"])
-    except:
-        publish("debug" , "ERROR: installing modules")
+    #try:
+    #    call(["pip", "install", "-r", "requirements.txt"])
+    #except:
+    #    publish("debug" , "ERROR: installing modules")
     
     try:
         motor_init(motor_topics)
