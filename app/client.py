@@ -27,6 +27,7 @@ from paho.mqtt import client as mqtt_client
 GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
+global DHT_SENSOR
 
 def expander_init():
     global expander_bus_1, expander_bus_2
@@ -281,6 +282,7 @@ def feedback_checks():
         feedback_callback(value)
 
 def get_humid():
+    global DHT_SENSOR
     try:
         DHT_SENSOR = Adafruit_DHT.DHT22
     except Exception as e:
