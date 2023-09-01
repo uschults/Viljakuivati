@@ -283,7 +283,8 @@ def feedback_checks():
 def get_humid():
     try:
         DHT_SENSOR = Adafruit_DHT.DHT22
-    except:
+    except Exception as e:
+        publish("debug", str(e))
         publish("debug", "ERROR: can't create dht22 object")
         return 0
 
