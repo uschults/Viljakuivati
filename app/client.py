@@ -337,7 +337,7 @@ def get_humid2():
                 time.sleep(0.2)
                 publish(key, "{}".format(sensors[id].humidity()))
                 publish("debug", "{} {} {:3.2f} {} {} {} {}".format(sensors[id].humidity(), sensors[id].temperature(), sensors[id].staleness(),sensors[id].bad_checksum(), sensors[id].short_message(), sensors[id].missing_message(),sensors[id].sensor_resets()))
-                sensors[id].cancel()
+                
                 id+=1
             next_reading+=INTERVAL
             time.sleep(next_reading-time.time())
