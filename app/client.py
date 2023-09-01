@@ -433,7 +433,7 @@ def main():
     
 
     try:
-        publish("debug", check_output(["dmesg", "|", "grep", "tty"]))
+        publish("debug", check_output(["dmesg", "grep", "tty"]))
     except:
         publish("debug", "ERROR: finding serial ports")
 
