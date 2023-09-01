@@ -27,7 +27,7 @@ from paho.mqtt import client as mqtt_client
 GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
-global DHT22, DHT_SENSOR1, DHT_SENSOR2, pigpio
+global DHT22, DHT_SENSOR1, DHT_SENSOR2, pigpio, Adafruit_DHT
 
 def expander_init():
     global expander_bus_1, expander_bus_2
@@ -350,7 +350,7 @@ def get_humid2():
 
 
 def main():
-    global client, IOPi1, DHT22, pigpio
+    global client, IOPi1, DHT22, pigpio, Adafruit_DHT
     # motor_init before mqtt or iter error
     
     client = mqtt_init()
