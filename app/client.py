@@ -293,9 +293,9 @@ def get_humid():
     while humid_sensors:
         try:
             for key, value in humid_sensors.items():
-                humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, value)
+                humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, 17)
                 if humidity is not None:
-                    publish(key, "{1:0.1f}%".format( humidity))
+                    publish(key, "{1:0.1f}".format( humidity))
                 else:
                     publish("debug","ERROR: Failed to retrieve data from humidity sensor")
                     publish("debug", str(humidity))
