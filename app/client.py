@@ -314,13 +314,17 @@ def get_humid2():
     INTERVAL = 3
     try:
         pi = pigpio.pi()
+    except Exception as e:  
+        publish("debug", str(e))
+        return 0
+
+    try:
         sensor1 = DHT22.sensor(pi,17)
         sensor2 = DHT22.sensor(pi,27)
         next_reading = time.time()
         sensors =[sensor1,sensor2]
     except Exception as e:  
         publish("debug", str(e))
-        publish("debug", "ERROR: can't create dht22 object")
         return 0
 
     while humid_sensors:
