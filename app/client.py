@@ -13,7 +13,10 @@ import traceback
 
 from threading import Thread, Event
 from subprocess import call, check_output
+
 from paho.mqtt import client as mqtt_client
+import Adafruit_DHT
+
 from save_data import save_to_client
 
 #from IOPi import IOPi
@@ -59,6 +62,7 @@ temperature_topics = ["temp1", "temp2", "temp3", "temp4", "temp5", "temp6"]
 motor_topics = {}
 level_buttons = {}
 temp_sensors = {}
+humid_sensors = {}
 feedback_inputs = {}
 
 # generate client ID with pub prefix randomly
@@ -122,6 +126,11 @@ def feedback_init(feedback_inputs):
     else:
         publish("debug", "No feedbacks")
         return 0
+
+def humid_sensor_init():
+     for key, value in config['HUMID_SENSORS'].items():
+        value = int(value)
+        humid_sensors[key] = value
 
 def temperature_sensor_init():
     # not needed if 1-wire interface enabled
@@ -272,6 +281,23 @@ def feedback_checks():
     for key, value in feedback_inputs.items():
         feedback_callback(value)
 
+def get_humid():
+    try:
+        DHT_SENSOR = Adafruit_DHT.DHT22
+    except:
+        publish("debug", "ERROR: can't creating dht22 object")
+        return 0
+        
+    while humid_sensors:
+        try:
+            for key, value in humid_sensors.items():
+                humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, value)
+                if humidity is not None and temperature is not None:
+                    publish(key, "{1:0.1f}%".format( humidity))
+                else:
+                    publish("debug","ERROR: Failed to retrieve data from humidity sensor")
+        except:
+            publish("debug", "ERROR: reading humid sensor")
 
 def main():
     global client, IOPi1
@@ -318,12 +344,22 @@ def main():
         publish("debug", "temps read")
     except:
         publish("debug", "error in temp_init")
+
+    try:
+        humid_sensor_init()
+        publish("debug", "humids read")
+    except:
+        publish("debug", "ERROR: humid_init")
     
     # Separate thread for reading different temp sensors values
     temp_thread = Thread(target = get_temps)
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
+    humid_thread = Thread(target= get_humid)
+    humid_thread.start()
+
+
     time_last = time.time()
     while (True):
         if(feedback):
