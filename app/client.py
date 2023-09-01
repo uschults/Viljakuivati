@@ -296,7 +296,7 @@ def get_humid():
         try:
             id = 0
             for key, value in humid_sensors.items():
-                humidity, temperature = Adafruit_DHT.read_retry(sensors[id], 17)
+                humidity, temperature = Adafruit_DHT.read_retry(sensors[id], value)
                 if humidity is not None and temperature is not None:
                     humid_value = "Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity)
                     publish(key, humid_value)
