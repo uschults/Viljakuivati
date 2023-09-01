@@ -13,11 +13,8 @@ import traceback
 
 from threading import Thread, Event
 from subprocess import call, check_output
-
-from paho.mqtt import client as mqtt_client
-import Adafruit_DHT
-
 from save_data import save_to_client
+from paho.mqtt import client as mqtt_client
 
 #from IOPi import IOPi
 
@@ -47,10 +44,9 @@ config.read('configfile.ini')
 
 device_folders = []
 
-##### to be moved to config file maybe
+##### to be hidden
 broker = '80.250.119.25'
 port = 1883
-
 
 
 # Topics in server 
@@ -76,12 +72,14 @@ password = 'admin'
 program_running = Event()
 
 # ------------------------------------------------------------- #
-# Inits  
+# Inits
 
 def mqtt_init():
     client = connect_mqtt()
     client.loop_start()
     return client
+
+# Reading pins from configfile.ini
 
 def motor_init(motor_topics):
     #read from config file to list
@@ -165,6 +163,7 @@ def rising_level_btn_callback(pin):
                 publish(key, "false")
             break
 
+# Callback to detect  motor state
 def feedback_callback(pin):
     #print("feedback pin", pin)
     time.sleep(0.5)
@@ -178,7 +177,7 @@ def feedback_callback(pin):
 
 # ------------------------------------------------------------- #
 # MQTT communication
-
+# MQTT Setup
 def connect_mqtt():
     def on_connect(client, userdata, flags, rc):
         if rc == 0:
@@ -222,7 +221,7 @@ def on_message(client, userdata, msg):
         #print("Connection check")
         publish("pistate", "Online")
 
-
+# Function for sending messages to server
 def publish(topic, msg):
     global client
     result = client.publish(topic, msg)
@@ -247,7 +246,7 @@ def get_temps():
         except:
             publish("debug", "ERROR: reading temp sensors")
 
-    publish("debug","Ei ole temperatuuriandureid")
+    publish("debug","ERROR: no temp sensors found")
 
 def activate_relay_gpio(topic, state):
     GPIO.output(int(motor_topics[topic][not state]), 1)
@@ -265,7 +264,7 @@ def activate_relay_i2c(topic, state):
         time.sleep(2)
         expander_bus_2.write_pin(pin-16, 0)
     else:
-        publish("debug", "wrong pin")
+        publish("debug", "ERROR: wrong pin")
     publish("debug", pin)
 
 def motor_control(topic, state):
@@ -285,9 +284,9 @@ def get_humid():
     try:
         DHT_SENSOR = Adafruit_DHT.DHT22
     except:
-        publish("debug", "ERROR: can't creating dht22 object")
+        publish("debug", "ERROR: can't create dht22 object")
         return 0
-        
+
     while humid_sensors:
         try:
             for key, value in humid_sensors.items():
@@ -306,11 +305,17 @@ def main():
     client = mqtt_init()
     publish("debug", "Connection made")
     # outputs and inputs init
+
+    try:
+        call(["pip", "install", "-r", "requirements.txt"])
+    except:
+        publish("debug" , "ERROR: installing modules")
+    
     try:
         motor_init(motor_topics)
         publish("debug", "motors read")
     except:
-        publish("debug", "error in motor_init")
+        publish("debug", "ERROR: in motor_init")
 
     try:
         try:
@@ -325,13 +330,13 @@ def main():
         publish("debug", "expander setup")
 
     except:
-        publish("debug", "error in expander_init")
+        publish("debug", "ERROR:  in expander_init")
 
     try:
         button_init(level_buttons)
         publish("debug", "buttons read")
     except: 
-        publish("debug", "error in button_init")
+        publish("debug", "ERROR:  in button_init")
     
     try:
         feedback = feedback_init(feedback_inputs)
@@ -346,6 +351,11 @@ def main():
         publish("debug", "error in temp_init")
 
     try:
+        try:
+            import Adafruit_DHT
+        except ImportError as i:
+            publish("debug", str(e))
+            
         humid_sensor_init()
         publish("debug", "humids read")
     except:
@@ -373,10 +383,7 @@ def main():
                         publish("debug", "ERROR: unable to check feedbacks")
         
 if __name__ == "__main__":
-    #try:
-    #    call(["pip", "install", "-r", "requirements.txt"])
-    #except:
-    #    print("error installing modules")
+
     try:   
         main()
     except KeyboardInterrupt:

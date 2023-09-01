@@ -1,4 +1,6 @@
 paho-mqtt==1.6.1
 GitPython
 smbus2
-git+https://github.com/abelectronicsuk/ABElectronics_Python_Libraries.git
+Adafruit_DHT
+wheel
+setuptools
