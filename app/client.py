@@ -282,9 +282,11 @@ def feedback_checks():
         feedback_callback(value)
 
 def get_humid():
-    global DHT_SENSOR, Adafruit_DHT
+    global DHT_SENSOR1, DHT_SENSOR2, Adafruit_DHT
     try:
-        DHT_SENSOR = Adafruit_DHT.DHT22
+        DHT_SENSOR1 = Adafruit_DHT.DHT22
+        DHT_SENSOR2 = Adafruit_DHT.DHT22
+        sensors = [DHT_SENSOR1, DHT_SENSOR2]
     except Exception as e:
         publish("debug", str(e))
         publish("debug", "ERROR: can't create dht22 object")
@@ -292,14 +294,16 @@ def get_humid():
 
     while humid_sensors:
         try:
+            id = 0
             for key, value in humid_sensors.items():
-                humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, 17)
+                humidity, temperature = Adafruit_DHT.read_retry(sensors[id], 17)
                 if humidity is not None and temperature is not None:
                     humid_value = "Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity)
                     publish(key, humid_value)
                 else:
                     publish("debug","ERROR: Failed to retrieve data from humidity sensor")
                     publish("debug", str(humidity))
+                id+=1
         except Exception as e:
             publish("debug", "ERROR: reading humid sensor")
             publish("debug", str(e))
