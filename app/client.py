@@ -27,7 +27,7 @@ from paho.mqtt import client as mqtt_client
 GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
-global DHT_SENSOR
+global Adafruit_DHT, DHT_SENSOR
 
 def expander_init():
     global expander_bus_1, expander_bus_2
@@ -282,7 +282,7 @@ def feedback_checks():
         feedback_callback(value)
 
 def get_humid():
-    global DHT_SENSOR
+    global DHT_SENSOR, Adafruit_DHT
     try:
         DHT_SENSOR = Adafruit_DHT.DHT22
     except Exception as e:
@@ -294,12 +294,13 @@ def get_humid():
         try:
             for key, value in humid_sensors.items():
                 humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, value)
-                if humidity is not None and temperature is not None:
+                if humidity is not None:
                     publish(key, "{1:0.1f}%".format( humidity))
                 else:
                     publish("debug","ERROR: Failed to retrieve data from humidity sensor")
         except:
             publish("debug", "ERROR: reading humid sensor")
+        time.sleep(1)
 
 def main():
     global client, IOPi1, Adafruit_DHT
