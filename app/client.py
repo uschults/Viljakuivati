@@ -27,7 +27,7 @@ from paho.mqtt import client as mqtt_client
 GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
-global Adafruit_DHT, DHT_SENSOR1, DHT_SENSOR2
+global DHT22, DHT_SENSOR1, DHT_SENSOR2, pigpio
 
 def expander_init():
     global expander_bus_1, expander_bus_2
@@ -310,8 +310,38 @@ def get_humid():
             publish("debug", str(e))
         time.sleep(3)
 
+def get_humid2():
+    INTERVAL = 3
+    try:
+        pi = pigpio.pi()
+        sensor1 = DHT22.sensor(pi,17)
+        sensor2 = DHT22.sensor(pi,27)
+        next_reading = time.time()
+        sensors =[sensor1,sensor2]
+    except Exception as e:  
+        publish("debug", str(e))
+        publish("debug", "ERROR: can't create dht22 object")
+        return 0
+
+    while humid_sensors:
+        try:
+            id = 0
+            for key, value in humid_sensors.items():
+                sensors[id].trigger()
+                time.sleep(0.2)
+                publish("debug", sensors[id].humidity)
+                id+=1
+            next_reading+=INTERVAL
+            time.sleep(next_reading-time.time())
+
+        except Exception as e:
+            pi.stop()
+            publish("debug", "ERROR: reading humid sensor")
+            publish("debug", str(e))
+
+
 def main():
-    global client, IOPi1, Adafruit_DHT
+    global client, IOPi1, DHT22, pigpio
     # motor_init before mqtt or iter error
     
     client = mqtt_init()
@@ -322,7 +352,12 @@ def main():
     #    call(["pip", "install", "-r", "requirements.txt"])
     #except:
     #    publish("debug" , "ERROR: installing modules")
-    
+
+    try:
+        publish("debug", check_output(["sudo", "apt-get", "install", "python3-pigpio"]))
+    except:
+        publish("debug", "ERROR: installing module")
+
     try:
         motor_init(motor_topics)
         publish("debug", "motors read")
@@ -363,11 +398,16 @@ def main():
         publish("debug", "error in temp_init")
 
     try:
+#        try:
+#            import Adafruit_DHT as Adafruit_DHT
+#       except ImportError as i:
+#            publish("debug", str(e))
         try:
-            import Adafruit_DHT as Adafruit_DHT
-        except ImportError as i:
-            publish("debug", str(e))
-            
+            import pigpio
+            import DHT22
+        except:
+            publish("debug", "ERROR: dht22 import")
+
         humid_sensor_init()
         publish("debug", "humids read")
     except:
@@ -378,7 +418,7 @@ def main():
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
-    humid_thread = Thread(target= get_humid)
+    humid_thread = Thread(target= get_humid2)
     humid_thread.start()
 
 
