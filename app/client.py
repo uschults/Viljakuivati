@@ -335,6 +335,7 @@ def get_humid2():
                 sensors[id].trigger()
                 time.sleep(0.2)
                 publish("debug", sensors[id].humidity)
+                sensors[id].cancel()
                 id+=1
             next_reading+=INTERVAL
             time.sleep(next_reading-time.time())
@@ -412,6 +413,11 @@ def main():
             import DHT22
         except:
             publish("debug", "ERROR: dht22 import")
+
+        try:
+            publish("debug", check_output(["sudo", "pigpiod"]))
+        except:
+            publish("debug", "ERROR: running pigpio daemon")
 
         humid_sensor_init()
         publish("debug", "humids read")
