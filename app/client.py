@@ -315,7 +315,7 @@ def get_humid2():
     try:
         pi = pigpio.pi()
     except Exception as e:  
-        publish("debug", str(e))
+        publish("debug", "piobject" + str(e))
         return 0
 
     try:
@@ -324,7 +324,7 @@ def get_humid2():
         next_reading = time.time()
         sensors =[sensor1,sensor2]
     except Exception as e:  
-        publish("debug", str(e))
+        publish("debug", "sensorobject" + str(e))
         return 0
 
     while humid_sensors:
