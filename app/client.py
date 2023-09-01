@@ -308,6 +308,7 @@ def get_humid():
         except Exception as e:
             publish("debug", "ERROR: reading humid sensor")
             publish("debug", str(e))
+            return 0
         time.sleep(3)
 
 def get_humid2():
@@ -359,10 +360,10 @@ def main():
     #except:
     #    publish("debug" , "ERROR: installing modules")
 
-    try:
-        publish("debug", check_output(["sudo", "apt-get", "install", "pigpio"]))
-    except:
-        publish("debug", "ERROR: installing module")
+    #try:
+    #    publish("debug", check_output(["sudo", "apt-get", "install", "pigpio"]))
+    #except:
+    #    publish("debug", "ERROR: installing module")
 
     try:
         motor_init(motor_topics)
