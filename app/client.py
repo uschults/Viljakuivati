@@ -29,7 +29,7 @@ GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
 global DHT22, DHT_SENSOR1, DHT_SENSOR2, pigpio, Adafruit_DHT
-global serial_port
+global serial_port, serial_port_2
 
 
 def expander_init():
@@ -438,6 +438,7 @@ def main():
         publish("debug", "ERROR: finding serial ports")
 
     serialstart = 0
+    serialstart_2 = 0
     try:
         global serial_port
         serial_port = serial.Serial(
@@ -452,6 +453,20 @@ def main():
     except Exception as e:
         publish("debug", str(e))
 
+    try:
+        global serial_port_2
+        serial_port_2 = serial.Serial(
+        # Serial Port to read the data from
+        port='/dev/ttyUSB1', # Use `dmesg | grep tty` to find the port
+        baudrate=9600,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=1)
+        serialstart_2 = 1
+    except Exception as e:
+        publish("debug", str(e))
+    
 
 
     # Separate thread for reading different temp sensors values
@@ -477,13 +492,21 @@ def main():
         try:
             if(serialstart):
                 data = serial_port.readline().decode()
-                publish("humid1", data)
+                publish("humid2", data)
                 time.sleep(2)
         except Exception as e:
             publish("debug", str(e))
             serial_port.close()
             serialstart = 0
-
+        try:
+            if(serialstart_2):
+                data = serial_port_2.readline().decode()
+                publish("humid1", data)
+                time.sleep(2)
+        except Exception as e:
+            publish("debug", str(e))
+            serial_port_2.close()
+            serialstart = 0
         
 if __name__ == "__main__":
 
