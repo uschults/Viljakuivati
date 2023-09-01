@@ -302,7 +302,7 @@ def get_humid():
             publish("debug", "ERROR: reading humid sensor")
 
 def main():
-    global client, IOPi1
+    global client, IOPi1, Adafruit_DHT
     # motor_init before mqtt or iter error
     
     client = mqtt_init()
@@ -349,13 +349,13 @@ def main():
 
     try:
         temperature_sensor_init()
-        publish("debug", "temps read")
+        publish("debug", "temps read")  
     except:
         publish("debug", "error in temp_init")
 
     try:
         try:
-            import Adafruit_DHT
+            import Adafruit_DHT as Adafruit_DHT
         except ImportError as i:
             publish("debug", str(e))
             
