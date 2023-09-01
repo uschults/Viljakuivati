@@ -2,6 +2,7 @@ import os
 import sys
 import glob
 import time
+import serial
 import datetime
 import read_temp
 import random
@@ -28,6 +29,8 @@ GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
 global DHT22, DHT_SENSOR1, DHT_SENSOR2, pigpio, Adafruit_DHT
+global serial_port
+
 
 def expander_init():
     global expander_bus_1, expander_bus_2
@@ -297,6 +300,7 @@ def get_humid():
             id = 0
             for key, value in humid_sensors.items():
                 humidity, temperature = Adafruit_DHT.read_retry(sensors[id], value)
+                time.sleep(0.2)
                 if humidity is not None and temperature is not None:
                     humid_value = "Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity)
                     publish(key, humid_value)
@@ -427,13 +431,36 @@ def main():
     except:
         publish("debug", "ERROR: humid_init")
     
+
+    try:
+        publish("debug", check_output(["dmesg", "|", "grep", "tty"]))
+    except:
+        publish("debug", "ERROR: finding serial ports")
+
+    serialstart = 0
+    try:
+        global serial_port
+        serial_port = serial.Serial(
+        # Serial Port to read the data from
+        port='/dev/ttyAMA0', # Use `dmesg | grep tty` to find the port
+        baudrate=9600,
+        parity=serial.PARITY_NONE,
+        stopbits=serial.STOPBITS_ONE,
+        bytesize=serial.EIGHTBITS,
+        timeout=1)
+        serialstart = 1
+    except Exception as e:
+        publish("debug", str(e))
+
+
+
     # Separate thread for reading different temp sensors values
     temp_thread = Thread(target = get_temps)
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
-    humid_thread = Thread(target= get_humid)
-    humid_thread.start()
+    #humid_thread = Thread(target= get_humid)
+    #humid_thread.start()
 
 
     time_last = time.time()
@@ -447,6 +474,16 @@ def main():
                         time_last=time_present
                     except:
                         publish("debug", "ERROR: unable to check feedbacks")
+        try:
+            if(serialstart):
+                data = serial_port.readline().decode()
+                publish("humid1", data)
+                time.sleep(2)
+        except Exception as e:
+            publish("debug", str(e))
+            serial_port.close()
+            serialstart = 0
+
         
 if __name__ == "__main__":
 
