@@ -311,6 +311,7 @@ def get_humid():
         time.sleep(3)
 
 def get_humid2():
+    global pigpio, DHT22
     INTERVAL = 3
     try:
         pi = pigpio.pi()
