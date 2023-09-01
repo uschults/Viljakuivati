@@ -298,6 +298,7 @@ def get_humid():
                     publish(key, "{1:0.1f}%".format( humidity))
                 else:
                     publish("debug","ERROR: Failed to retrieve data from humidity sensor")
+                    publish("debug", str(humidity))
         except:
             publish("debug", "ERROR: reading humid sensor")
         time.sleep(1)
