@@ -299,8 +299,9 @@ def get_humid():
                 else:
                     publish("debug","ERROR: Failed to retrieve data from humidity sensor")
                     publish("debug", str(humidity))
-        except:
+        except Exception as e:
             publish("debug", "ERROR: reading humid sensor")
+            publish("debug", str(e))
         time.sleep(1)
 
 def main():
