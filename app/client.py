@@ -27,7 +27,7 @@ from paho.mqtt import client as mqtt_client
 GPIO.setmode(GPIO.BOARD)
 global IOPi1
 global expander_bus_1, expander_bus_2
-global Adafruit_DHT, DHT_SENSOR
+global Adafruit_DHT, DHT_SENSOR1, DHT_SENSOR2
 
 def expander_init():
     global expander_bus_1, expander_bus_2
