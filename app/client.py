@@ -345,6 +345,7 @@ def get_humid2():
             pi.stop()
             publish("debug", "ERROR: reading humid sensor")
             publish("debug", str(e))
+            return 0
 
 
 def main():
