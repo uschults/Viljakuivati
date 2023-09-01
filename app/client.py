@@ -442,7 +442,7 @@ def main():
         global serial_port
         serial_port = serial.Serial(
         # Serial Port to read the data from
-        port='/dev/ttyAMA0', # Use `dmesg | grep tty` to find the port
+        port='/dev/ttyAMA1', # Use `dmesg | grep tty` to find the port
         baudrate=9600,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
