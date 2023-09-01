@@ -432,7 +432,7 @@ def main():
     #temp_thread = Thread(target = get_temps, args=[client]) # when not using global ?
     temp_thread.start()
     
-    humid_thread = Thread(target= get_humid1)
+    humid_thread = Thread(target= get_humid)
     humid_thread.start()
 
 
