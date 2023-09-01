@@ -303,7 +303,6 @@ def get_humid():
         except Exception as e:
             publish("debug", "ERROR: reading humid sensor")
             publish("debug", str(e))
-        time.sleep(1)
 
 def main():
     global client, IOPi1, Adafruit_DHT
