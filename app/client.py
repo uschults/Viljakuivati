@@ -451,6 +451,7 @@ def main():
         bytesize=serial.EIGHTBITS,
         timeout=1)
         serialstart = 1
+        serial_port.reset_input_buffer()
     except Exception as e:
         publish("debug", str(e))
 
@@ -465,6 +466,7 @@ def main():
         bytesize=serial.EIGHTBITS,
         timeout=1)
         serialstart_2 = 1
+        serial_port_2.reset_input_buffer()
     except Exception as e:
         publish("debug", str(e))
     
