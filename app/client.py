@@ -439,6 +439,7 @@ def main():
 
     serialstart = 0
     serialstart_2 = 0
+
     try:
         global serial_port
         serial_port = serial.Serial(
@@ -493,7 +494,7 @@ def main():
             if(serialstart):
                 data = serial_port.readline().decode()
                 publish("humid2", data)
-                time.sleep(2)
+  
         except Exception as e:
             publish("debug", str(e))
             serial_port.close()
@@ -502,7 +503,7 @@ def main():
             if(serialstart_2):
                 data = serial_port_2.readline().decode()
                 publish("humid1", data)
-                time.sleep(2)
+    
         except Exception as e:
             publish("debug", str(e))
             serial_port_2.close()
