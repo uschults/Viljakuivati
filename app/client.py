@@ -480,7 +480,7 @@ def main():
     #humid_thread = Thread(target= get_humid)
     #humid_thread.start()
 
-
+    publish("debug", str(serialstart) + " : " + str(serialstart_2))
     time_last = time.time()
     while (True):
         if(feedback):
