@@ -484,6 +484,8 @@ def main():
     publish("debug", str(serialstart) + " : " + str(serialstart_2))
     time_last = time.time()
     while (True):
+        data = ""
+        data2 = ""
         if(feedback):
                 time_present = time.time()
                 if((time_present-time_last)>30):
@@ -499,6 +501,7 @@ def main():
                 if(data):
                     publish("humid2", data)
                     publish("debug", data)
+                    time.sleep(0.2)
                 #publish("debug", serial_port.in_waiting())
   
         except Exception as e:
@@ -511,6 +514,7 @@ def main():
                 if(data2):
                     publish("humid1", data2)
                     publish("debug", data2)
+                    time.sleep(0.2)
                 #publish("debug", serial_port_2.in_waiting())
     
         except Exception as e:
