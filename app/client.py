@@ -497,7 +497,6 @@ def main():
             if(serialstart):
                 data = serial_port.readline().decode()
                 if(data):
-                    publish("debug", "Serial1 empty")
                     publish("humid2", data)
                     publish("debug", data)
                 #publish("debug", serial_port.in_waiting())
