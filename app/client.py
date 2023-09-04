@@ -195,6 +195,7 @@ def connect_mqtt():
                 for motor in motor_topics:
                     client.subscribe(motor)
             client.subscribe("check1")
+            client.subscribe("reboot")
             publish("debug", "subscribes done")
         else:
             with open("logfile.txt") as logfile:
