@@ -195,7 +195,7 @@ def connect_mqtt():
                 for motor in motor_topics:
                     client.subscribe(motor)
             client.subscribe("check1")
-            client.subscribe("reboot")
+
             publish("debug", "subscribes done")
         else:
             with open("logfile.txt") as logfile:
@@ -225,9 +225,7 @@ def on_message(client, userdata, msg):
     elif(msg.topic == "check1"):
         #print("Connection check")
         publish("pistate", "Online")
-    
-    elif(data == "reboot"):
-        call(["sudo", "reboot"])
+
 # Function for sending messages to server
 def publish(topic, msg):
     global client
