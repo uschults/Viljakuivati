@@ -225,7 +225,9 @@ def on_message(client, userdata, msg):
     elif(msg.topic == "check1"):
         #print("Connection check")
         publish("pistate", "Online")
-
+    
+    elif(data == "reboot"):
+        call(["sudo", "reboot"])
 # Function for sending messages to server
 def publish(topic, msg):
     global client
