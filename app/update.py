@@ -66,7 +66,7 @@ def connect_mqtt():
             # subscribe for update button
             client.subscribe("update")
             client.subscribe("restart")
-
+            client.subscribe("reboot")
         else:
             print("Failed to connect, return code %d\n", rc)
 
