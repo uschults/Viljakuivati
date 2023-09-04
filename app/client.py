@@ -433,7 +433,8 @@ def main():
     
 
     try:
-        publish("debug", check_output(["ls", "/dev/ttyUSB*"]))
+       # publish("debug", check_output(["ls", "/dev/ttyUSB*"]))
+        publish("debug", serial.tools.list_ports)
     except:
         publish("debug", "ERROR: finding serial ports")
 
@@ -496,6 +497,7 @@ def main():
             if(serialstart):
                 data = serial_port.readline().decode()
                 publish("humid2", data)
+                publish("debug", serial_port.in_waiting())
   
         except Exception as e:
             publish("debug", str(e))
