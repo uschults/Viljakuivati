@@ -497,7 +497,7 @@ def main():
             if(serialstart):
                 data = serial_port.readline().decode()
                 publish("humid2", data)
-                publish("debug", serial_port.in_waiting())
+                #publish("debug", serial_port.in_waiting())
   
         except Exception as e:
             publish("debug", str(e))
@@ -507,7 +507,7 @@ def main():
             if(serialstart_2):
                 data = serial_port_2.readline().decode()
                 publish("humid1", data)
-                publish("debug", serial_port_2.in_waiting())
+                #publish("debug", serial_port_2.in_waiting())
     
         except Exception as e:
             publish("debug", str(e))
