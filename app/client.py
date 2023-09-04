@@ -501,6 +501,7 @@ def main():
                 if(data):
                     publish("humid2", data)
                     publish("debug", data)
+                    serial_port.reset_input_buffer()
                     time.sleep(0.2)
                 #publish("debug", serial_port.in_waiting())
   
@@ -514,6 +515,7 @@ def main():
                 if(data2):
                     publish("humid1", data2)
                     publish("debug", data2)
+                    serial_port_2.reset_input_buffer()
                     time.sleep(0.2)
                 #publish("debug", serial_port_2.in_waiting())
     

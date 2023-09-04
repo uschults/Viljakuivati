@@ -18,7 +18,7 @@ time = datetime.datetime.now()
 c = [time ,b]
 print(time)
 print(c) """
-
+""" 
 import time
 
 time_last = time.time()
@@ -29,4 +29,9 @@ while(True):
     if((time_now-time_last)>4):
         print("YEABOY")
         time_last=time_now
-    time.sleep(1)
+    time.sleep(1) """
+
+if(""):
+    print("empty")
+else:
+    print("actual")
