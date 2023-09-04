@@ -496,10 +496,10 @@ def main():
         try:
             if(serialstart):
                 data = serial_port.readline().decode()
-                if(data == ""):
+                if(data):
                     publish("debug", "Serial1 empty")
-                publish("humid2", data)
-                publish("debug", data)
+                    publish("humid2", data)
+                    publish("debug", data)
                 #publish("debug", serial_port.in_waiting())
   
         except Exception as e:
@@ -509,8 +509,9 @@ def main():
         try:
             if(serialstart_2):
                 data2 = serial_port_2.readline().decode()
-                publish("humid1", data2)
-                publish("debug", data2)
+                if(data2):
+                    publish("humid1", data2)
+                    publish("debug", data2)
                 #publish("debug", serial_port_2.in_waiting())
     
         except Exception as e:
