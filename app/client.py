@@ -447,7 +447,7 @@ def main():
         serial_port = serial.Serial(
         # Serial Port to read the data from
         port='/dev/ttyUSB0', # Use `dmesg | grep tty` to find the port
-        baudrate=9600,
+        baudrate=4800,
         parity=serial.PARITY_NONE,
         stopbits=serial.STOPBITS_ONE,
         bytesize=serial.EIGHTBITS,
