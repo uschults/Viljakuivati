@@ -1,9 +1,0 @@
--   temp saving
--   periodic checks
-    +   feedbacks
-    -   
--   feedback sends too many reqs
-
-turn LEDS off when offline
-
-logimine paremaks
