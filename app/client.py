@@ -523,7 +523,7 @@ def main():
         except Exception as e:
             publish("debug", str(e))
             serial_port_2.close()
-            serialstart = 0
+            serialstart_2 = 0
         
 if __name__ == "__main__":
 
