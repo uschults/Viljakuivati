@@ -492,7 +492,7 @@ def main():
                 if((time_present-time_last)>30):
                     try:
                         feedback_checks()
-                        publish("debug", "feedback_check")
+                        #publish("debug", "feedback_check")
                         time_last=time_present
                     except:
                         publish("debug", "ERROR: unable to check feedbacks")
