@@ -248,8 +248,9 @@ def get_temps():
                 # Saving to client?
 
                 publish( topic, temp) 
-        except:
-            publish("debug", "ERROR: reading temp sensors")
+        except Exception as e:
+            #publish("debug", "ERROR: reading temp sensors")
+            publish("debug", str(e))
 
     publish("debug","ERROR: no temp sensors found")
 
