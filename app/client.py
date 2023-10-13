@@ -251,7 +251,7 @@ def get_temps():
         except Exception as e:
             #publish("debug", "ERROR: reading temp sensors")
             publish("debug", str(e))
-            del temp_sensors[topic]
+            
     publish("debug","ERROR: no temp sensors found")
 
 def activate_relay_gpio(topic, state):
