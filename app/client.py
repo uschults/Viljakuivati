@@ -258,6 +258,7 @@ def get_temps():
                 publish("debug", str(e))
                 sensor_errors[sensor] = 20
             else:
+                time.sleep(1)
                 sensor_errors[sensor] = sensor_errors[sensor]-1
             
     publish("debug","ERROR: no temp sensors found")
