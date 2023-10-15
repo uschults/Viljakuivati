@@ -254,7 +254,7 @@ def get_temps():
                         sensor_errors[sensor] = sensor_errors[sensor]-1
 
         except Exception as e:
-            if(sensor_errors[sensor] == 0):
+            if(sensor_errors[sensor] >= 0):
                 publish("debug", str(e))
                 sensor_errors[sensor] = 20
             else:
