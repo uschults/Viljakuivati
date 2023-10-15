@@ -229,7 +229,7 @@ def on_message(client, userdata, msg):
 # Function for sending messages to server
 def publish(topic, msg):
     global client
-    result = client.publish(topic, msg)
+    result = client.publish(topic, msg, qos=2)
     # result: [0, 1]
     status = result[0]
     if status == 0:
@@ -256,7 +256,7 @@ def get_temps():
         except Exception as e:
             if(sensor_errors[sensor] == 0):
                 publish("debug", str(e))
-                sensor_errors[sensor] = 10
+                sensor_errors[sensor] = 20
             else:
                 sensor_errors[sensor] = sensor_errors[sensor]-1
             
