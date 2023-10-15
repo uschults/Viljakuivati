@@ -240,9 +240,6 @@ def publish(topic, msg):
         print(f"Failed to send message to topic {topic}")
 
 def get_temps():
-    sensor_errors = {}
-    for topic, sensor in temp_sensors.items():
-       sensor_errors[sensor] = 0
     
     while temp_sensors:
         try:
@@ -250,16 +247,10 @@ def get_temps():
                     temp = read_temp.read_temperature(sensor)
                     publish( topic, temp) 
 
-                    if(sensor_errors[sensor] > 0):
-                        sensor_errors[sensor] = sensor_errors[sensor]-1
-
         except Exception as e:
-            if(sensor_errors[sensor] >= 0):
-                publish("debug", str(e))
-                sensor_errors[sensor] = 20
-            else:
-                time.sleep(1)
-                sensor_errors[sensor] = sensor_errors[sensor]-1
+            publish("debug", str(e))
+            time.sleep(1)
+
             
     publish("debug","ERROR: no temp sensors found")
 
