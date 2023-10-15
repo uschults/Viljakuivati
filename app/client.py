@@ -249,7 +249,7 @@ def get_temps():
 
         except Exception as e:
             publish("debug", str(e))
-            time.sleep(1)
+           # time.sleep(1)
 
             
     publish("debug","ERROR: no temp sensors found")
